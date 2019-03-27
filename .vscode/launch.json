@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "configurations": [
+    {
+        "type": "chrome",
+        "request": "launch",
+        "name": "Debug in Chrome",
+        "url": "http://localhost:3000",
+        // "skipFiles": [
+        //   "${workspaceFolder}/node_modules/**/*.js"
+        // ],
+        "webRoot": "${workspaceRoot}",
+        //"sourceMapPathOverrides": { "webpack:///*": "${webRoot}/*" },
+        "sourceMaps": true,
+        "userDataDir": "${workspaceRoot}/../../_chrome",
+        "runtimeArgs": [
+          "--profile-directory=debug-profile"
+        ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug current file",
+      "program": "${file}"
+    }
+  ]
+}

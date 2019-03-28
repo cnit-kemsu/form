@@ -1,17 +1,20 @@
 {
   "name": "@implicit/form",
   "scope": "@implicit",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "author": "yo-yo",
   "license": "ISC",
   "eslintIgnore": [
     "build/**/*.js",
-    "dist/**/*.js"
+    "dist/**/*.js",
+    "node_modules/**/*.js"
   ],
-  "dependencies": {
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+  "peerDependencies": {
+    "@implicit/force-update": "github:cnit-kemsu/force-update",
+    "@implicit/publisher": "github:cnit-kemsu/publisher",
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
@@ -23,7 +26,8 @@
     "@babel/plugin-proposal-private-methods": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
-    "archiver": "^3.0.0",
+    "@implicit/force-update": "github:cnit-kemsu/force-update",
+    "@implicit/publisher": "github:cnit-kemsu/publisher",
     "babel-eslint": "^11.0.0-beta.0",
     "babel-loader": "^8.0.5",
     "eslint": "^5.15.1",
@@ -32,6 +36,9 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-react": "^7.12.4",
     "html-webpack-plugin": "^3.2.0",
+    "inspectpack": "^4.2.1",
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.2.1"

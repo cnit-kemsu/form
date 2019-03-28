@@ -1,4 +1,4 @@
-import { Publisher } from './publisher';
+import { Publisher } from '@implicit/publisher';
 import { Composite } from './composite';
 import { compose, nonUndefined, firstElement } from './_shared';
 

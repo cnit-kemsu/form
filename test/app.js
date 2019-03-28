@@ -1,11 +1,11 @@
 import React, { createElement } from 'react';
 import ReactDOM from 'react-dom';
-import { useForm } from './hooks/use-form';
-import { useField } from './hooks/use-field';
-import { useCompound } from './hooks/use-compound';
-import { useFieldArray } from './hooks/use-field-array';
-import { useFormStatus } from './hooks/use-form-status';
-import { useUIBlocker } from './hooks/use-ui-blocker';
+import { useForm } from '../src/hooks/use-form';
+import { useField } from '../src/hooks/use-field';
+import { useCompound } from '../src/hooks/use-compound';
+import { useFieldArray } from '../src/hooks/use-field-array';
+import { useFormStatus } from '../src/hooks/use-form-status';
+import { useUIBlocker } from '../src/hooks/use-ui-blocker';
 
 function validateForm({ firstname, data }) {
   if (firstname && data?.address?.city)

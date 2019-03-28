@@ -1,4 +1,4 @@
-import { Publisher } from './publisher';
+import { Publisher } from '@implicit/publisher';
 import { nonUndefined } from './_shared';
 
 export class Composite {

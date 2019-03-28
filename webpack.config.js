@@ -1,31 +1,39 @@
-//const fs = require("fs");
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const fs = require('fs');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { DuplicatesPlugin } = require("inspectpack/plugin");
 
 module.exports = {
-  devtool: "inline-source-map",
-  target: "web",
-  entry: "./src/app.js",
+  devtool: 'inline-source-map',
+  target: 'web',
+  entry: './test/app.js',
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "main.js"
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'main.js'
   },
 
   module: {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
-        loader: "babel-loader",
-        //options: JSON.parse(fs.readFileSync(".babelrc"))
+        //exclude: /node_modules/,
+        include: [
+          path.resolve(__dirname, 'test'),
+          path.resolve(__dirname, 'src'),
+          path.resolve(__dirname, 'node_modules/@implicit')
+        ],
+        loader: 'babel-loader',
+        options: JSON.parse(fs.readFileSync('.babelrc'))
       }
     ]
   },
 
   plugins: [
     new HtmlWebpackPlugin({
-      title: "form",
-      template: "./src/index.html"
+      title: 'form',
+      template: './test/index.html'
+    }),
+    new DuplicatesPlugin({
     })
   ],
 
@@ -36,8 +44,8 @@ module.exports = {
       cacheGroups: {
         vendor: {
           test: /node_modules/,
-          name: "vendor",
-          chunks: "all"
+          name: 'vendor',
+          chunks: 'all'
         }
       }
     }

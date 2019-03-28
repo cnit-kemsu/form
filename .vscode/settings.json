@@ -5,8 +5,6 @@
   "javascript.format.enable": true,
   "javascript.format.placeOpenBraceOnNewLineForControlBlocks": true,
 
-  //"jsDocCompletion.enabled": true,
-
   "editor.detectIndentation": false,
 
   "editor.codeLens": false,
@@ -29,26 +27,20 @@
   ],
   
   "emmet.triggerExpansionOnTab": true,
-    // "files.associations": {
-    //   "*.js": "javascriptreact"
-    // },
-    //"emmet.syntaxProfiles": { "javascript": "html" },
-    "emmet.includeLanguages": {
-      "javascript": "javascriptreact"
-    },
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
 
-    "javascript.implicitProjectConfig.experimentalDecorators": true,
+  "javascript.implicitProjectConfig.experimentalDecorators": true,
 
-    "todohighlight": {
-      "keywords": [
-        {
-          "text": "DEBUG",
-          "color": "#ddddff",
-          "backgroundColor": "#2A52BE",
-        }
-      ],
-    },
-
-    //"flow.useNPMPackagedFlow": true
+  "todohighlight": {
+    "keywords": [
+      {
+        "text": "DEBUG",
+        "color": "#ddddff",
+        "backgroundColor": "#2A52BE",
+      }
+    ]
+  }
 
 }

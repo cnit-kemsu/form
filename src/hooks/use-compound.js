@@ -1,5 +1,5 @@
 import { useMemo, useEffect } from 'react';
-import { useForceUpdate } from './use-force-update';
+import { useForceUpdate } from '@implicit/force-update';
 import { Compound } from '../classes/compound';
 
 export function useCompound(composer, name, validate) {

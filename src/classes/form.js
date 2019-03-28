@@ -1,4 +1,4 @@
-import { Publisher } from './publisher';
+import { Publisher } from '@implicit/publisher';
 
 export class Form {
   submitErrors = undefined;

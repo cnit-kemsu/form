@@ -16,7 +16,6 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        //exclude: /node_modules/,
         include: [
           path.resolve(__dirname, 'test'),
           path.resolve(__dirname, 'src'),
@@ -33,8 +32,7 @@ module.exports = {
       title: 'form',
       template: './test/index.html'
     }),
-    new DuplicatesPlugin({
-    })
+    new DuplicatesPlugin({})
   ],
 
   optimization: {

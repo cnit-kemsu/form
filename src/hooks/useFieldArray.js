@@ -1,6 +1,6 @@
 import { useMemo, useEffect } from 'react';
 import { useForceUpdate } from '@implicit/force-update';
-import { FieldArray } from '../classes/field-array';
+import { FieldArray } from '../classes/FieldArray';
 
 export function useFieldArray(composer, name, validate) {
 

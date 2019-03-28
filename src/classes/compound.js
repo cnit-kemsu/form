@@ -1,5 +1,5 @@
 import { Publisher } from '@implicit/publisher';
-import { Composite } from './composite';
+import { Composite } from './Composite';
 import { compose, nonUndefined, firstElement } from './_shared';
 
 export class Compound {

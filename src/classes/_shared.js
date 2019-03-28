@@ -1,4 +1,4 @@
-import { Composite } from './composite';
+import { Composite } from './Composite';
 
 export function compose(_this, composer, name) {
   const path = name.split('.');

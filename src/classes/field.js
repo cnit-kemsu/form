@@ -1,4 +1,4 @@
-import { Composite } from './composite';
+import { Composite } from './Composite';
 import { compose, nonUndefined } from './_shared';
 
 export class Field {

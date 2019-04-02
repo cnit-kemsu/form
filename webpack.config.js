@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { DuplicatesPlugin } = require("inspectpack/plugin");
+const { DuplicatesPlugin } = require('inspectpack/plugin');
 
 module.exports = {
   devtool: 'inline-source-map',

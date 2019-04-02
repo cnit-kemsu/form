@@ -1,6 +1,6 @@
 {
-  "name": "@implicit/form",
-  "scope": "@implicit",
+  "name": "@kemsu/form",
+  "scope": "@kemsu",
   "version": "0.1.0",
   "description": "",
   "author": "yo-yo",
@@ -11,8 +11,8 @@
     "node_modules/**/*.js"
   ],
   "peerDependencies": {
-    "@implicit/force-update": "github:cnit-kemsu/force-update",
-    "@implicit/publisher": "github:cnit-kemsu/publisher",
+    "@kemsu/force-update": "github:cnit-kemsu/force-update",
+    "@kemsu/publisher": "github:cnit-kemsu/publisher",
     "react": "^16.8.5",
     "react-dom": "^16.8.5"
   },
@@ -26,8 +26,8 @@
     "@babel/plugin-proposal-private-methods": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
-    "@implicit/force-update": "github:cnit-kemsu/force-update",
-    "@implicit/publisher": "github:cnit-kemsu/publisher",
+    "@kemsu/force-update": "github:cnit-kemsu/force-update",
+    "@kemsu/publisher": "github:cnit-kemsu/publisher",
     "babel-eslint": "^11.0.0-beta.0",
     "babel-loader": "^8.0.5",
     "eslint": "^5.15.1",

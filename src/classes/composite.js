@@ -1,4 +1,4 @@
-import { Publisher } from '@implicit/publisher';
+import { Publisher } from '@kemsu/publisher';
 import { nonUndefined } from './_shared';
 
 export class Composite {

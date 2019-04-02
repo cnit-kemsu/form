@@ -1,5 +1,5 @@
 import { useMemo, useEffect } from 'react';
-import { useForceUpdate } from '@implicit/force-update';
+import { useForceUpdate } from '@kemsu/force-update';
 import { FormStatus } from '../classes/FormStatus';
 
 export function useFormStatus(composer) {

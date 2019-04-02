@@ -1,4 +1,4 @@
-import { Publisher } from '@implicit/publisher';
+import { Publisher } from '@kemsu/publisher';
 
 export class Form {
   submitErrors = undefined;

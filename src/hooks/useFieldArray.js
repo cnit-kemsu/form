@@ -1,5 +1,5 @@
 import { useMemo, useEffect } from 'react';
-import { useForceUpdate } from '@implicit/force-update';
+import { useForceUpdate } from '@kemsu/force-update';
 import { FieldArray } from '../classes/FieldArray';
 
 export function useFieldArray(composer, name, validate) {

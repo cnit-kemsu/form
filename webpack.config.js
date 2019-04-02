@@ -19,7 +19,7 @@ module.exports = {
         include: [
           path.resolve(__dirname, 'test'),
           path.resolve(__dirname, 'src'),
-          path.resolve(__dirname, 'node_modules/@implicit')
+          path.resolve(__dirname, 'node_modules/@kemsu')
         ],
         loader: 'babel-loader',
         options: JSON.parse(fs.readFileSync('.babelrc'))

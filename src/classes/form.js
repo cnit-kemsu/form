@@ -9,10 +9,9 @@ export class Form {
   validateEvent = new Publisher();
 
   constructor(handleSubmit, validate, initialize, onSubmitted) {
-    this.initialize = initialize;
-    this._validate = validate;
     this.handleSubmit = handleSubmit;
     this._initialize = initialize;
+    this._validate = validate;
     this.values = this.initialize();
     this.validate();
     this.onSubmitted = onSubmitted;

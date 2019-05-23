@@ -39,7 +39,7 @@ export class FieldArray {
   }
 
   set values(values) {
-    if (this.composer.values === undefined) this.composer.values = [];
+    if (this.composer.values === undefined) this.composer.values = {};
     this.composer.values[this.name] = values;
   }
 

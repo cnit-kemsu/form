@@ -12,7 +12,9 @@ export function useFieldArray(composer, name, validate) {
   return [
     {
       map: fieldArray.map,
-      push: fieldArray.push
+      push: fieldArray.push,
+      elements: fieldArray.elements,
+      length: fieldArray.elements.length,
     },
     {
       error: fieldArray.error,

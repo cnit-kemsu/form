@@ -4,6 +4,7 @@ import { nonUndefined } from './_shared';
 export class Composite {
   updateEvent = new Publisher();
   resetEvent = new Publisher();
+  subscribed = false;
 
   constructor(composer, name) {
     this.composer = composer;
@@ -51,12 +52,16 @@ export class Composite {
   }
 
   subscribeToEvents() {
+    if (this.subscribed) return;
+    this.subscribed = true;
     if (this.composer instanceof Composite) this.composer.subscribeToEvents();
     this.updateSub = this.composer.updateEvent.subscribe(this.handleUpdate);
     this.resetSub = this.composer.resetEvent.subscribe(this.handleReset);
   }
 
   unsubscribeFromEvents() {
+    if (!this.subscribed) return;
+    this.subscribed = false;
     this.updateSub.unsubscribe();
     this.resetSub.unsubscribe();
     if (this.composer instanceof Composite) this.composer.unsubscribeFromEvents();

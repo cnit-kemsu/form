@@ -103,6 +103,9 @@ function Friend({ element }) {
       <div style={{ display: 'flex' }}>
         <TextInput label="Firstname" comp={element.composer} name="firstname" />
         <TextInput label="Lastname" comp={element.composer} name="lastname" />
+        <TextInput label="Middlename" comp={element.composer} name="middlename" />
+        <TextInput label="Middlename1" comp={element.composer} name="middlename1" />
+        <TextInput label="Middlename2" comp={element.composer} name="middlename2" />
       </div>
       <button data-control onClick={element.delete}>Delete</button>
     </div>
@@ -184,12 +187,12 @@ const initialize = () => ({
 function App() {
 
   console.log('render App');
-  const form = useForm(handleSubmit, initialize, validateForm);
-  useUIBlocker(form);
+  const form = useForm(handleSubmit, validateForm, initialize);
+  //useUIBlocker(form);
 
   return (
     <div>
-      <div>
+      {/* <div>
         <TextInput label="Firstname" comp={form} name="firstname" validate={validateFirstname}/>
       </div>
       <div>
@@ -197,7 +200,7 @@ function App() {
       </div>
       <div>
        <Password comp={form} />
-      </div>
+      </div> */}
       <div>
         <Friends comp={form}/>
       </div>

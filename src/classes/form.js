@@ -1,5 +1,17 @@
 import { Publisher } from '@kemsu/publisher';
 
+function copyObject(target) {
+  const newObject = {};
+  for (const key of Object.keys(target)) newObject[key] = copy(target[key]);
+  return newObject;
+}
+
+function copy(target) {
+  if (target instanceof Array) return target.map(copy);
+  if (target instanceof Object) return copyObject(target);
+  return target;
+}
+
 export class Form {
   submitErrors = undefined;
   updateEvent = new Publisher();
@@ -25,7 +37,8 @@ export class Form {
   }
 
   initialize() {
-    return this._initialize?.() || {};
+    if (this._initialize) return this._initialize() |> copy(#);
+    return {};
   }
 
   validate() {

@@ -1,5 +1,5 @@
 import { Composite } from './Composite';
-import { compose, nonUndefined } from './_shared';
+import { compose, nonUndefined } from './compose';
 
 export class Field {
   dirty = false;
@@ -28,7 +28,7 @@ export class Field {
   }
 
   set value(value) {
-    if (this.composer.values === undefined) this.composer.values = {};
+    if (!this.composer.values) this.composer.values = {};
     this.composer.values[this.name] = value;
   }
 

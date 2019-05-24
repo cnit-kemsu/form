@@ -1,35 +1,26 @@
 import { Publisher } from '@kemsu/publisher';
-
-function copyObject(target) {
-  const newObject = {};
-  for (const key of Object.keys(target)) newObject[key] = copy(target[key]);
-  return newObject;
-}
-
-function copy(target) {
-  if (target instanceof Array) return target.map(copy);
-  if (target instanceof Object) return copyObject(target);
-  return target;
-}
+import { copy } from './copy';
 
 export class Form {
   submitErrors = undefined;
   updateEvent = new Publisher();
+  validateEvent = new Publisher();
   resetEvent = new Publisher();
   submitEvent = new Publisher();
   completeEvent = new Publisher();
-  validateEvent = new Publisher();
 
-  constructor(handleSubmit, validate, initialize, onSubmitted) {
+  constructor(handleSubmit, initialValues, validate, { onSubmitted, onSubmitErrors }) {
     this.handleSubmit = handleSubmit;
-    this._initialize = initialize;
+    this.initialValues = initialValues;
     this._validate = validate;
-    this.values = this.initialize();
-    this.validate();
     this.onSubmitted = onSubmitted;
+    this.onSubmitErrors = onSubmitErrors;
 
     this.reset = this.reset.bind(this);
     this.submit = this.submit.bind(this);
+
+    this.initialize();
+    this.validate();
   }
 
   get form() {
@@ -37,13 +28,12 @@ export class Form {
   }
 
   initialize() {
-    if (this._initialize) return this._initialize() |> copy(#);
-    return {};
+    this.values = this.initialValues ? copy(this.initialValues) : {};
   }
 
   validate() {
     this.errorStack = this._validate?.(this.values)
-    |> # !== undefined && [#] || [];
+    |> # === undefined && [] || [#];
   }
 
   update(...args) {
@@ -51,6 +41,7 @@ export class Form {
     this.validate();
     this.updateEvent.publish(...args);
     this.validateEvent.publish(false);
+
     //console.log('values:', this.values); //DEBUG
     //console.log('hasErrors:', this.hasErrors); //DEBUG
   }
@@ -60,13 +51,14 @@ export class Form {
     if (!this.hasErrors) {
       this.submitErrors = await this.handleSubmit?.(this.values);
       this.completeEvent.publish();
-      if (this.onSubmitted !== undefined && this.submitErrors === undefined) this.onSubmitted();
+      if (this.submitErrors === undefined) this.onSubmitted?.(this.values);
+      else this.onSubmitErrors?.(this.submitErrors);
     }
   }
 
   reset() {
     const prevValues = this.values;
-    this.values = this.initialize();
+    this.initialize();
     this.validate();
     this.resetEvent.publish(prevValues);
     this.validateEvent.publish(true);

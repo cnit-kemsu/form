@@ -14,11 +14,3 @@ export function compose(_this, composer, name) {
     _this.name = path[path.length - 1];
   }
 }
-
-export function nonUndefined(value) {
-  return value !== undefined;
-}
-
-export function firstElement(array) {
-  return array[0];
-}

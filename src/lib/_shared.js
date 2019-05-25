@@ -1,4 +1,4 @@
-export function nonUndefined(value) {
+export function noUndefined(value) {
   return value !== undefined;
 }
 

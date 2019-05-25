@@ -1,26 +1,27 @@
-import { Composite } from './Composite';
-import { compose, nonUndefined } from './compose';
+import { Subscriber } from './Subscriber';
+import { transit } from './transit';
+import { noUndefined } from './_shared';
 
-export class Field {
+export class Field extends Subscriber {
   dirty = false;
   touched = false;
 
   constructor(forceUpdate, composer, name, validate, getValue) {
+    super();
+
     this.forceUpdate = forceUpdate;
-    compose(this, composer, name);
-    this._validate = validate;
+    transit(this, composer, name);
+    this.validate = validate;
     this.getValue = getValue;
 
     this.currentError = error => error[this.name];
-    this.validate();
+    this.testValidation();
 
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleReset = this.handleReset.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.unsubscribeFromEvents = this.unsubscribeFromEvents.bind(this);
-    this.handleSubscriptions = this.handleSubscriptions.bind(this);
   }
 
   get value() {
@@ -32,24 +33,11 @@ export class Field {
     this.composer.values[this.name] = value;
   }
 
-  handleChange(event) {
-    this.value = this.getValue(event);
-    this.dirty = true;
-    this.composer.update(this);
-  }
-
-  handleBlur({ relatedTarget }) {
-    if (!this.touched && !relatedTarget?.attributes['data-control']) {
-      this.touched = true;
-      this.forceUpdate();
-    }
-  }
-
-  validate() {
-    const error = [
-      this._validate?.(this.value),
-      ...this.composer.errorStack.map(this.currentError)
-    ].filter(nonUndefined)[0];
+  testValidation() {
+    const error = this.composer.transitErrors.map(this.currentError)
+      |> this.validate && [ this.validate(this.values), ...# ] || #
+      |> #.filter(noUndefined)
+      |> #[0];
     
     if (error !== undefined) this.composer.form.hasErrors = true;
     if (this.error !== error) {
@@ -59,14 +47,31 @@ export class Field {
     return false;
   }
 
+  handleChange(event) {
+    this.value = this.getValue(event);
+    this.dirty = true;
+    this.composer.update(this);
+  }
+
+  handleBlur({ relatedTarget }) {
+    const shoudUpdate = !this.touched && !relatedTarget?.attributes['data-control'];
+    if (shoudUpdate) {
+      this.touched = true;
+      this.forceUpdate();
+    }
+  }
+
   handleUpdate(caller) {
-    if (this.validate() || caller === this) this.forceUpdate();
+    const shoudUpdate = this.testValidation() || caller === this;
+    if (shoudUpdate) this.forceUpdate();
   }
 
   handleReset(prevValues) {
-    if (this.validate() || this.dirty 
-      || this.touched || prevValues?.[this.name] !== this.value) {
-
+    const shoudUpdate = this.testValidation()
+      || this.dirty 
+      || this.touched
+      || prevValues?.[this.name] !== this.value;
+    if (shoudUpdate) {
       this.dirty = false;
       this.touched = false;
       this.forceUpdate();
@@ -74,30 +79,11 @@ export class Field {
   }
 
   handleSubmit() {
-    if (this.error !== undefined) if (!this.dirty || !this.touched) {
+    const shoudUpdate = this.error && (!this.dirty || !this.touched);
+    if (shoudUpdate) {
       this.dirty = true;
       this.touched = true;
       this.forceUpdate();
     }
   }
-
-  subscribeToEvents() {
-    if (this.composer instanceof Composite) this.composer.subscribeToEvents();
-    this.updateSub = this.composer.updateEvent.subscribe(this.handleUpdate);
-    this.resetSub = this.composer.resetEvent.subscribe(this.handleReset);
-    this.submitSub = this.composer.submitEvent.subscribe(this.handleSubmit);
-  }
-
-  unsubscribeFromEvents() {
-    this.updateSub.unsubscribe();
-    this.resetSub.unsubscribe();
-    this.submitSub.unsubscribe();
-    if (this.composer instanceof Composite) this.composer.unsubscribeFromEvents();
-  }
-
-  handleSubscriptions() {
-    this.subscribeToEvents();
-    return this.unsubscribeFromEvents;
-  }
-
 }

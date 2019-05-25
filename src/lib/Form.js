@@ -12,7 +12,7 @@ export class Form {
   constructor(handleSubmit, initialValues, validate, { onSubmitted, onSubmitErrors }) {
     this.handleSubmit = handleSubmit;
     this.initialValues = initialValues;
-    this._validate = validate;
+    this.validate = validate;
     this.onSubmitted = onSubmitted;
     this.onSubmitErrors = onSubmitErrors;
 
@@ -20,7 +20,7 @@ export class Form {
     this.submit = this.submit.bind(this);
 
     this.initialize();
-    this.validate();
+    this.doValidation();
   }
 
   get form() {
@@ -31,15 +31,15 @@ export class Form {
     this.values = this.initialValues ? copy(this.initialValues) : {};
   }
 
-  validate() {
-    this.errorStack = this._validate?.(this.values)
-    |> # === undefined && [] || [#];
+  doValidation() {
+    this.transitErrors = this.validate?.(this.values)
+      |> # === undefined || # === null && [] || [#];
   }
 
-  update(...args) {
+  update(callers) {
     this.hasErrors = false;
-    this.validate();
-    this.updateEvent.publish(...args);
+    this.doValidation();
+    this.updateEvent.publish(callers);
     this.validateEvent.publish(false);
 
     //console.log('values:', this.values); //DEBUG
@@ -59,7 +59,7 @@ export class Form {
   reset() {
     const prevValues = this.values;
     this.initialize();
-    this.validate();
+    this.doValidation();
     this.resetEvent.publish(prevValues);
     this.validateEvent.publish(true);
   }

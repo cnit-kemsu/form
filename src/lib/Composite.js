@@ -1,69 +1,90 @@
-import { Publisher } from '@kemsu/publisher';
-import { nonUndefined } from './_shared';
+import { Composer } from './Composer';
+import { transit } from './transit';
+import { noUndefined, firstElement } from './_shared';
 
-export class Composite {
-  updateEvent = new Publisher();
-  resetEvent = new Publisher();
-  subscribed = false;
+export class Composite extends Composer {
+  dirty = false;
+  touched = false;
 
-  constructor(composer, name) {
-    this.composer = composer;
-    this.name = name;
+  constructor(forceUpdate, composer, name, validate) {
+    super();
 
-    this.currentError = error => error[this.name];
-    this.validate();
-
-    this.submitEvent = composer.submitEvent;
-    this.completeEvent = composer.completeEvent;
-
+    this.handleBlur = this.handleBlur.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleReset = this.handleReset.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.forceUpdate = forceUpdate;
+    transit(this, composer, name);
+    this.validate = validate;
+
+    this.currentError = error => error[this.name];
+    this.testValidation();
   }
 
-  get form() {
-    return this.composer.form;
+  testValidation() {
+    const errors = this.composer.transitErrors.map(this.currentError)
+      |> this.validate && [ this.validate(this.values), ...# ] || #
+      |> #.filter(noUndefined);
+
+    this.transitErrors = errors.map(firstElement).filter(noUndefined);
+
+    const error = errors[0]?.[1];
+    if (error !== undefined) this.composer.form.hasErrors = true;
+    if (this.error !== error) {
+      this.error = error;
+      return true;
+    }
+    return false;
   }
 
-  get values() {
-    return this.composer.values?.[this.name];
+  makeDirty() {
+    if (!this.dirty) {
+      this.dirty = true;
+      return true;
+    }
+    return false;
   }
 
-  set values(values) {
-    if (this.composer.values === undefined) this.composer.values = {};
-    this.composer.values[this.name] = values;
+  update(callers) {
+    this.composer.update([this, ...callers]);
   }
 
-  update(...args) {
-    this.composer.update(...args);
+  handleBlur({ currentTarget, relatedTarget }) {
+    const shoudUpdate = !this.touched
+      && !relatedTarget?.attributes['data-control']
+      && !currentTarget.contains(relatedTarget);
+    if (shoudUpdate) {
+      this.touched = true;
+      this.forceUpdate();
+    }
   }
 
-  validate() {  
-    this.errorStack = this.composer.errorStack.map(this.currentError).filter(nonUndefined);
-  }
-
-  handleUpdate(...args) {
-    this.validate();
-    this.updateEvent.publish(...args);
+  handleUpdate([caller, ...callers]) {
+    const shoudUpdate = this.testValidation()
+      |> (caller === this && (this.makeDirty() || callers.length === 0)) || #;
+    this.updateEvent.publish(callers);
+    if (shoudUpdate) this.forceUpdate();
+    return shoudUpdate;
   }
 
   handleReset(prevValues) {
-    this.validate();
+    const shoudUpdate = this.testValidation() || this.dirty || this.touched;
+    this.dirty = false;
+    this.touched = false;
     this.resetEvent.publish(prevValues?.[this.name]);
+    if (shoudUpdate) this.forceUpdate();
+    return shoudUpdate;
   }
 
-  subscribeToEvents() {
-    if (this.subscribed) return;
-    this.subscribed = true;
-    if (this.composer instanceof Composite) this.composer.subscribeToEvents();
-    this.updateSub = this.composer.updateEvent.subscribe(this.handleUpdate);
-    this.resetSub = this.composer.resetEvent.subscribe(this.handleReset);
-  }
-
-  unsubscribeFromEvents() {
-    if (!this.subscribed) return;
-    this.subscribed = false;
-    this.updateSub.unsubscribe();
-    this.resetSub.unsubscribe();
-    if (this.composer instanceof Composite) this.composer.unsubscribeFromEvents();
+  handleSubmit() {
+    const shoudUpdate = this.error && (!this.dirty || !this.touched);
+    this.submitEvent.publish();
+    if (shoudUpdate) {
+      this.dirty = true;
+      this.touched = true;
+      this.forceUpdate();
+    }
+    return shoudUpdate;
   }
 }

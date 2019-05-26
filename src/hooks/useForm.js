@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
-import { Form } from '../classes/Form';
+import { Form } from '../lib/Form';
 
-function defaultInitializeFn() { return {}; }
-export function useForm(handleSubmit, validate, initialize = defaultInitializeFn, onSubmitted) {
-  const form = useMemo(() => new Form(handleSubmit, validate, initialize, onSubmitted), []);
+export function useForm(handleSubmit, initialValues, validate, options) {
+  const form = useMemo(() => new Form(handleSubmit, initialValues, validate, options), []);
   return form;
 }

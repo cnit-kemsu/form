@@ -2,7 +2,8 @@ import { Composer } from './Composer';
 import { noUndefined } from './_shared';
 
 export class Transistor extends Composer {
-  _subscribers = 0;
+  totalSubscribers = 0;
+  subscribedToEvents = false;
 
   constructor(composer, name) {
     super();
@@ -17,18 +18,30 @@ export class Transistor extends Composer {
     this.propagateErrors();
   }
 
-  get subscrbers() {
-    return this._subscribers;
+  subscribeToEvents() {
+    if (this.subscribedToEvents) return;
+    this.subscribedToEvents = true;
+    super.subscribeToEvents();
   }
 
-  set subscrbers(value) {
-    if (this._subscribers === 0 && value === 1) this.subscribeToEvents();
-    if (this._subscribers === 1 && value === 0) this.unsubscribeFromEvents();
-    this._subscribers = value;
+  unsubscribeFromEvents() {
+    if (!this.subscribedToEvents) return;
+    this.subscribedToEvents = false;
+    super.unsubscribeFromEvents();
+  }
+
+  increaseTotalSubscribers() {
+    if (this.totalSubscribers === 0) this.subscribeToEvents();
+    this.totalSubscribers++;
+  }
+
+  decreaseTotalSubscribers() {
+    this.totalSubscribers--;
+    if (this.totalSubscribers === 0) this.unsubscribeFromEvents();
   }
 
   propagateErrors() {
-    this.errorStack = this.composer.errorStack.map(this.currentError).filter(noUndefined);
+    this.transitErrors = this.composer.transitErrors.map(this.currentError).filter(noUndefined);
   }
 
   update(callers) {

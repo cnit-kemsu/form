@@ -35,7 +35,7 @@ export class Field extends Subscriber {
 
   testValidation() {
     const error = this.composer.transitErrors.map(this.currentError)
-      |> this.validate && [ this.validate(this.values), ...# ] || #
+      |> this.validate && [ this.validate(this.value), ...# ] || #
       |> #.filter(noUndefined)
       |> #[0];
     
@@ -50,7 +50,7 @@ export class Field extends Subscriber {
   handleChange(event) {
     this.value = this.getValue(event);
     this.dirty = true;
-    this.composer.update(this);
+    this.composer.update([this]);
   }
 
   handleBlur({ relatedTarget }) {
@@ -61,7 +61,7 @@ export class Field extends Subscriber {
     }
   }
 
-  handleUpdate(caller) {
+  handleUpdate([caller]) {
     const shoudUpdate = this.testValidation() || caller === this;
     if (shoudUpdate) this.forceUpdate();
   }

@@ -1,6 +1,6 @@
 import { useMemo, useEffect } from 'react';
 import { useForceUpdate } from '@kemsu/force-update';
-import { FieldArray } from '../classes/FieldArray';
+import { FieldArray } from '@lib/FieldArray';
 
 export function useFieldArray(composer, name, validate) {
 
@@ -11,10 +11,8 @@ export function useFieldArray(composer, name, validate) {
 
   return [
     {
-      map: fieldArray.map,
-      push: fieldArray.push,
       elements: fieldArray.elements,
-      length: fieldArray.elements.length,
+      push: fieldArray.push
     },
     {
       error: fieldArray.error,

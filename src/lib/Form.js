@@ -9,7 +9,7 @@ export class Form {
   submitEvent = new Publisher();
   completeEvent = new Publisher();
 
-  constructor(handleSubmit, initialValues, validate, { onSubmitted, onSubmitErrors }) {
+  constructor(handleSubmit, initialValues, validate, { onSubmitted, onSubmitErrors } = {}) {
     this.handleSubmit = handleSubmit;
     this.initialValues = initialValues;
     this.validate = validate;
@@ -33,7 +33,7 @@ export class Form {
 
   doValidation() {
     this.transitErrors = this.validate?.(this.values)
-      |> # === undefined || # === null && [] || [#];
+      |> (# === undefined || # === null) && [] || [#];
   }
 
   update(callers) {

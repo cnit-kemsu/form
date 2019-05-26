@@ -1,6 +1,6 @@
 import { useMemo, useEffect } from 'react';
 import { useForceUpdate } from '@kemsu/force-update';
-import { FormStatus } from '../classes/FormStatus';
+import { FormStatus } from '@lib/FormStatus';
 
 export function useFormStatus(composer) {
 

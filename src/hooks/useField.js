@@ -1,6 +1,6 @@
 import { useMemo, useEffect } from 'react';
 import { useForceUpdate } from '@kemsu/force-update';
-import { Field } from '../classes/Field';
+import { Field } from '@lib/Field';
 
 function defaultValueGetter(event) {
   return event.currentTarget.value;

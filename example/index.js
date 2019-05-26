@@ -1,11 +1,10 @@
 import React, { createElement } from 'react';
 import ReactDOM from 'react-dom';
-import { useForm } from '../src/hooks/useForm';
-import { useField } from '../src/hooks/useField';
-import { useCompound } from '../src/hooks/useCompound';
-import { useFieldArray } from '../src/hooks/useFieldArray';
-import { useFormStatus } from '../src/hooks/useFormStatus';
-import { useUIBlocker } from '../src/hooks/useUIBlocker';
+import { useForm } from '@hooks/useForm';
+import { useField } from '@hooks/useField';
+import { useComposite } from '@hooks/useComposite';
+import { useFieldArray } from '@hooks/useFieldArray';
+import { useFormStatus } from '@hooks/useFormStatus';
 
 function validateForm({ firstname, data }) {
   if (firstname && data?.address?.city)
@@ -75,7 +74,7 @@ TextInput = React.memo(TextInput);
 
 function Password({ comp }) {
 
-  const [composer, { error, touched, dirty, onBlur }] = useCompound(comp, 'data.password', validatePassword);
+  const [composer, { error, touched, dirty, onBlur }] = useComposite(comp, 'data.password', validatePassword);
 
   return (
     <div onBlur={onBlur} style={{ padding: '5px', margin: '5px', width: 'fit-content', border: '2px solid black' }}>
@@ -105,7 +104,6 @@ function Friend({ element }) {
         <TextInput label="Lastname" comp={element.composer} name="lastname" />
         <TextInput label="Middlename" comp={element.composer} name="middlename" />
         <TextInput label="Middlename1" comp={element.composer} name="middlename1" />
-        <TextInput label="Middlename2" comp={element.composer} name="middlename2" />
       </div>
       <button data-control onClick={element.delete}>Delete</button>
     </div>
@@ -116,7 +114,7 @@ Friend = React.memo(Friend);
 function Friends({ comp }) {
 
   console.log('render Friends');
-  const [{ map, push }, { error, dirty, touched, onBlur }] = useFieldArray(comp, 'friends', validateFirends);
+  const [{ elements, push }, { error, dirty, touched, onBlur }] = useFieldArray(comp, 'friends', validateFirends);
 
   return (
     <div onBlur={onBlur} style={{ padding: '10px', border: '3px solid black', width: 'fit-content' }}>
@@ -124,7 +122,7 @@ function Friends({ comp }) {
         touched: {touched ? 'true' : 'false'}, dirty: {dirty ? 'true' : 'false'}
       </div>
       <div>
-        {map(element => (
+        {elements.map(element => (
             <Friend key={element.key} element={element} />
         ))}
       </div>
@@ -174,7 +172,7 @@ async function handleSubmit(values) {
   if (values.firstname === 'John') return 'John is invalid firstname';
 }
 
-const initialize = () => ({
+const initValues = {
   firstname: 'John',
   friends: [
     {
@@ -182,17 +180,16 @@ const initialize = () => ({
       lastname: 'Cooper'
     }
   ]
-});
+};
 
 function App() {
 
   console.log('render App');
-  const form = useForm(handleSubmit, validateForm, initialize);
-  //useUIBlocker(form);
+  const form = useForm(handleSubmit, initValues, validateForm);
 
   return (
     <div>
-      {/* <div>
+      <div>
         <TextInput label="Firstname" comp={form} name="firstname" validate={validateFirstname}/>
       </div>
       <div>
@@ -200,17 +197,17 @@ function App() {
       </div>
       <div>
        <Password comp={form} />
-      </div> */}
+      </div>
       <div>
         <Friends comp={form}/>
       </div>
-      <div>
+      {/* <div>
         <SubmitErrors comp={form} />
       </div>
       <div style={{ display: 'flex', padding: '10px' }}>
         <ResetButton style={{ margin: '5px' }} comp={form} />
         <SubmitButton style={{ margin: '5px' }} comp={form} />
-      </div>
+      </div> */}
     </div>
   );
 }

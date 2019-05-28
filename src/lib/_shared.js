@@ -1,5 +1,5 @@
-export function noUndefined(value) {
-  return value !== undefined;
+export function notNull(value) {
+  return value != null;
 }
 
 export function firstElement(array) {

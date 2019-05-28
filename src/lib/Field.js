@@ -1,27 +1,22 @@
 import { Subscriber } from './Subscriber';
 import { transit } from './transit';
-import { noUndefined } from './_shared';
+import { notNull } from './_shared';
 
 export class Field extends Subscriber {
   dirty = false;
   touched = false;
 
   constructor(forceUpdate, composer, name, validate, getValue) {
-    super();
+    const [_composer, _name] = transit(composer, name);
+    super(forceUpdate, _composer);
+    this.name = _name;
 
-    this.forceUpdate = forceUpdate;
-    transit(this, composer, name);
     this.validate = validate;
     this.getValue = getValue;
-
-    this.currentError = error => error[this.name];
-    this.testValidation();
+    this.error = this._validate();
 
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.handleReset = this.handleReset.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   get value() {
@@ -33,13 +28,19 @@ export class Field extends Subscriber {
     this.composer.values[this.name] = value;
   }
 
-  testValidation() {
-    const error = this.composer.transitErrors.map(this.currentError)
-      |> this.validate && [ this.validate(this.value), ...# ] || #
-      |> #.filter(noUndefined)
-      |> #[0];
-    
-    if (error !== undefined) this.composer.form.hasErrors = true;
+  _validate() {
+    const error = [
+      this.validate?.(this.value),
+      ...this.composer.errors.map(this.currentError)
+    ].filter(notNull)[0];
+
+    if (error != null) this.composer.form.hasErrors = true;
+
+    return error;
+  }
+
+  shoudUpdateError() {
+    const error = this._validate();
     if (this.error !== error) {
       this.error = error;
       return true;
@@ -50,40 +51,38 @@ export class Field extends Subscriber {
   handleChange(event) {
     this.value = this.getValue(event);
     this.dirty = true;
-    this.composer.update([this]);
+    this.composer.dispatchValuesChangeEvent(this);
   }
 
   handleBlur({ relatedTarget }) {
-    const shoudUpdate = !this.touched && !relatedTarget?.attributes['data-control'];
-    if (shoudUpdate) {
+    if (!this.touched
+      && !relatedTarget?.attributes['data-control']
+    ) {
       this.touched = true;
       this.forceUpdate();
     }
   }
 
-  handleUpdate([caller]) {
-    const shoudUpdate = this.testValidation() || caller === this;
-    if (shoudUpdate) this.forceUpdate();
+  shouldUpdateOnValuesChange(caller) {
+    return this.shoudUpdateError() || caller === this;
+  }
+
+  shouldUpdateOnReset(prevValues) {
+    return this.shoudUpdateError() || this.dirty || this.touched || prevValues?.[this.name] !== this.value;
+  }
+
+  shouldUpdateOnSubmit() {
+    if (this.error && (!this.dirty || !this.touched)) {
+      this.dirty = true;
+      this.touched = true;
+      return true;
+    }
+    return false;
   }
 
   handleReset(prevValues) {
-    const shoudUpdate = this.testValidation()
-      || this.dirty 
-      || this.touched
-      || prevValues?.[this.name] !== this.value;
-    if (shoudUpdate) {
-      this.dirty = false;
-      this.touched = false;
-      this.forceUpdate();
-    }
-  }
-
-  handleSubmit() {
-    const shoudUpdate = this.error && (!this.dirty || !this.touched);
-    if (shoudUpdate) {
-      this.dirty = true;
-      this.touched = true;
-      this.forceUpdate();
-    }
+    this.dirty = false;
+    this.touched = false;
+    super.handleReset(prevValues);
   }
 }

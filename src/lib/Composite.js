@@ -1,36 +1,44 @@
 import { Composer } from './Composer';
 import { transit } from './transit';
-import { noUndefined, firstElement } from './_shared';
+import { notNull, firstElement } from './_shared';
 
 export class Composite extends Composer {
   dirty = false;
   touched = false;
 
   constructor(forceUpdate, composer, name, validate) {
-    super();
+    super(forceUpdate, ...transit(composer, name));
 
     this.handleBlur = this.handleBlur.bind(this);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.handleReset = this.handleReset.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-
-    this.forceUpdate = forceUpdate;
-    transit(this, composer, name);
     this.validate = validate;
-
-    this.currentError = error => error[this.name];
-    this.testValidation();
+    this.error = this._validate();
   }
 
-  testValidation() {
-    const errors = this.composer.transitErrors.map(this.currentError)
-      |> this.validate && [ this.validate(this.values), ...# ] || #
-      |> #.filter(noUndefined);
+  handleBlur({ currentTarget, relatedTarget }) {
+    if (!this.touched
+      && !relatedTarget?.attributes['data-control']
+      && !currentTarget.contains(relatedTarget)
+    ) {
+      this.touched = true;
+      this.forceUpdate();
+    }
+  }
 
-    this.transitErrors = errors.map(firstElement).filter(noUndefined);
+  _validate() {
+    const errors = [
+      this.validate?.(this.values),
+      ...this.currentErrors
+    ].filter(notNull);
 
+    this.errors = errors.map(firstElement).filter(notNull);
     const error = errors[0]?.[1];
-    if (error !== undefined) this.composer.form.hasErrors = true;
+    if (error != null) this.composer.form.hasErrors = true;
+
+    return error;
+  }
+
+  shoudUpdateError() {
+    const error = this._validate();
     if (this.error !== error) {
       this.error = error;
       return true;
@@ -38,53 +46,31 @@ export class Composite extends Composer {
     return false;
   }
 
-  makeDirty() {
-    if (!this.dirty) {
+  shouldUpdateOnValuesChange(caller, ...callers) {
+    return this.shoudUpdateError() || (caller === this && (!this.dirty || callers.length === 0));
+  }
+
+  shouldUpdateOnReset() {
+    return this.shoudUpdateError() || this.dirty || this.touched;
+  }
+
+  shouldUpdateOnSubmit() {
+    if (this.error && (!this.dirty || !this.touched)) {
       this.dirty = true;
+      this.touched = true;
       return true;
     }
     return false;
   }
 
-  update(callers) {
-    this.composer.update([this, ...callers]);
-  }
-
-  handleBlur({ currentTarget, relatedTarget }) {
-    const shoudUpdate = !this.touched
-      && !relatedTarget?.attributes['data-control']
-      && !currentTarget.contains(relatedTarget);
-    if (shoudUpdate) {
-      this.touched = true;
-      this.forceUpdate();
-    }
-  }
-
-  handleUpdate([caller, ...callers]) {
-    const shoudUpdate = this.testValidation()
-      |> (caller === this && (this.makeDirty() || callers.length === 0)) || #;
-    this.updateEvent.publish(callers);
-    if (shoudUpdate) this.forceUpdate();
-    return shoudUpdate;
+  handleValuesChange(caller, ...callers) {
+    if (caller === this) this.dirty = true;
+    super.handleValuesChange(caller, ...callers);
   }
 
   handleReset(prevValues) {
-    const shoudUpdate = this.testValidation() || this.dirty || this.touched;
     this.dirty = false;
     this.touched = false;
-    this.resetEvent.publish(prevValues?.[this.name]);
-    if (shoudUpdate) this.forceUpdate();
-    return shoudUpdate;
-  }
-
-  handleSubmit() {
-    const shoudUpdate = this.error && (!this.dirty || !this.touched);
-    this.submitEvent.publish();
-    if (shoudUpdate) {
-      this.dirty = true;
-      this.touched = true;
-      this.forceUpdate();
-    }
-    return shoudUpdate;
+    super.handleReset(prevValues);
   }
 }

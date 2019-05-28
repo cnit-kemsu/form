@@ -1,64 +1,38 @@
 import { Composer } from './Composer';
-import { noUndefined } from './_shared';
+
+export const cache = [];
 
 export class Transistor extends Composer {
   totalSubscribers = 0;
-  subscribedToEvents = false;
 
   constructor(composer, name) {
-    super();
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.handleReset = this.handleReset.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    super(null, composer, name);
 
-    this.composer = composer;
-    this.name = name;
-
-    this.currentError = error => error[this.name];
-    this.propagateErrors();
+    this.errors = this.currentErrors;
   }
 
-  subscribeToEvents() {
-    if (this.subscribedToEvents) return;
-    this.subscribedToEvents = true;
-    super.subscribeToEvents();
-  }
-
-  unsubscribeFromEvents() {
-    if (!this.subscribedToEvents) return;
-    this.subscribedToEvents = false;
-    super.unsubscribeFromEvents();
-  }
-
-  increaseTotalSubscribers() {
-    if (this.totalSubscribers === 0) this.subscribeToEvents();
-    this.totalSubscribers++;
-  }
-
-  decreaseTotalSubscribers() {
-    this.totalSubscribers--;
-    if (this.totalSubscribers === 0) this.unsubscribeFromEvents();
-  }
-
-  propagateErrors() {
-    this.transitErrors = this.composer.transitErrors.map(this.currentError).filter(noUndefined);
-  }
-
-  update(callers) {
-    this.composer.update(callers);
-  }
-
-  handleUpdate(callers) {
-    this.propagateErrors();
-    this.updateEvent.publish(callers);
+  handleValuesChange(...callers) {
+    this.errors = this.currentErrors;
+    super.handleValuesChange(...callers);
   }
 
   handleReset(prevValues) {
-    this.propagateErrors();
-    this.resetEvent.publish(prevValues?.[this.name]);
+    this.errors = this.currentErrors;
+    super.handleReset(prevValues);
   }
 
-  handleSubmit() {
-    this.submitEvent.publish();
+  findInCache([,, transistor]) {
+    transistor === this;
+  }
+
+  subscribeToEvents() {
+    if (this.totalSubscribers === 0) super.subscribeToEvents();
+    this.totalSubscribers++;
+  }
+
+  unsubscribeFromEvents() {
+    this.totalSubscribers--;
+    if (this.totalSubscribers === 0) super.unsubscribeFromEvents();
+    cache.splice(cache.indexOf(this.findInCache), 1);
   }
 }

@@ -3,7 +3,7 @@ import { copy } from './copy';
 
 export class Form {
   submitErrors = undefined;
-  updateEvent = new Publisher();
+  valuesChangeEvent = new Publisher();
   validateEvent = new Publisher();
   resetEvent = new Publisher();
   submitEvent = new Publisher();
@@ -20,7 +20,7 @@ export class Form {
     this.submit = this.submit.bind(this);
 
     this.initialize();
-    this.doValidation();
+    this._validate();
   }
 
   get form() {
@@ -31,15 +31,15 @@ export class Form {
     this.values = this.initialValues ? copy(this.initialValues) : {};
   }
 
-  doValidation() {
-    this.transitErrors = this.validate?.(this.values)
-      |> (# === undefined || # === null) && [] || [#];
+  _validate() {
+    this.errors = this.validate?.(this.values)
+      |> # == null && [] || [#];
   }
 
-  update(callers) {
+  dispatchValuesChangeEvent(...callers) {
     this.hasErrors = false;
-    this.doValidation();
-    this.updateEvent.publish(callers);
+    this._validate();
+    this.valuesChangeEvent.publish(...callers);
     this.validateEvent.publish(false);
 
     //console.log('values:', this.values); //DEBUG
@@ -59,7 +59,7 @@ export class Form {
   reset() {
     const prevValues = this.values;
     this.initialize();
-    this.doValidation();
+    this._validate();
     this.resetEvent.publish(prevValues);
     this.validateEvent.publish(true);
   }

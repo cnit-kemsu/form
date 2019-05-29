@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { useForm } from '@hooks/useForm';
 import { useField } from '@hooks/useField';
 import { useComposite } from '@hooks/useComposite';
-// import { useFieldArray } from '@hooks/useFieldArray';
+import { useFieldArray } from '@hooks/useFieldArray';
 // import { useFormStatus } from '@hooks/useFormStatus';
 
 function validateForm({ firstname, data }) {
@@ -45,10 +45,10 @@ function validateOriginalPassword(originalPassword) {
   return undefined;
 }
 
-// function validateFirends(friends) {
-//   if (friends?.length < 2) return [undefined, 'There must be at least 2 friends'];
-//   return undefined; 
-// }
+function validateFirends(friends) {
+  if (friends?.length < 2) return [undefined, 'There must be at least 2 friends'];
+  return undefined; 
+}
 
 function TextInput({ comp, name, validate, label }) {
 
@@ -93,47 +93,46 @@ function Password({ comp }) {
 }
 Password = React.memo(Password);
 
-// function Friend({ element }) {
+function Friend({ element }) {
 
-//   console.log('render Friend:', element.composer.name);
+  console.log('render Friend:', element.name);
   
-//   return (
-//     <div style={{ padding: '5px', margin: '5px', border: '2px solid black', width: 'fit-content' }}>
-//       <div style={{ display: 'flex' }}>
-//         <TextInput label="Firstname" comp={element.composer} name="firstname" />
-//         <TextInput label="Lastname" comp={element.composer} name="lastname" />
-//         <TextInput label="Middlename" comp={element.composer} name="middlename" />
-//         <TextInput label="Middlename1" comp={element.composer} name="middlename1" />
-//       </div>
-//       <button data-control onClick={element.delete}>Delete</button>
-//     </div>
-//   );
-// }
-// Friend = React.memo(Friend);
+  return (
+    <div style={{ padding: '5px', margin: '5px', border: '2px solid black', width: 'fit-content' }}>
+      <div style={{ display: 'flex' }}>
+        <TextInput label="Firstname" comp={element} name="firstname" />
+        <TextInput label="Lastname" comp={element} name="lastname" />
+        <TextInput label="Middlename" comp={element} name="middlename" />
+      </div>
+      <button data-control onClick={element.delete}>Delete</button>
+    </div>
+  );
+}
+Friend = React.memo(Friend);
 
-// function Friends({ comp }) {
+function Friends({ comp }) {
 
-//   console.log('render Friends');
-//   const [{ elements, push }, { error, dirty, touched, onBlur }] = useFieldArray(comp, 'friends', validateFirends);
+  console.log('render Friends');
+  const [{ elements, push }, { error, dirty, touched, onBlur }] = useFieldArray(comp, 'friends', validateFirends);
 
-//   return (
-//     <div onBlur={onBlur} style={{ padding: '10px', border: '3px solid black', width: 'fit-content' }}>
-//       <div>
-//         touched: {touched ? 'true' : 'false'}, dirty: {dirty ? 'true' : 'false'}
-//       </div>
-//       <div>
-//         {elements.map(element => (
-//             <Friend key={element.key} element={element} />
-//         ))}
-//       </div>
-//       {error && <div style={touched && dirty ? { color: 'red' } : {}}>{error}</div>}
-//       <div>
-//         <button data-control onClick={() => push()}>Add friend</button>
-//       </div>
-//     </div>
-//   );
-// }
-// Friends = React.memo(Friends);
+  return (
+    <div onBlur={onBlur} style={{ padding: '10px', border: '3px solid black', width: 'fit-content' }}>
+      <div>
+        touched: {touched ? 'true' : 'false'}, dirty: {dirty ? 'true' : 'false'}
+      </div>
+      <div>
+        {elements.map(element => (
+            <Friend key={element.key} element={element} />
+        ))}
+      </div>
+      {error && <div style={touched && dirty ? { color: 'red' } : {}}>{error}</div>}
+      <div>
+        <button data-control onClick={() => push()}>Add friend</button>
+      </div>
+    </div>
+  );
+}
+Friends = React.memo(Friends);
 
 // function ResetButton({ comp }) {
 
@@ -174,12 +173,12 @@ async function handleSubmit(values) {
 
 const initValues = {
   firstname: 'John',
-  // friends: [
-  //   {
-  //     firstname: 'John',
-  //     lastname: 'Cooper'
-  //   }
-  // ]
+  friends: [
+    {
+      firstname: 'John',
+      lastname: 'Cooper'
+    }
+  ]
 };
 
 function App() {
@@ -193,12 +192,12 @@ function App() {
         <TextInput label="Firstname" comp={form} name="firstname" validate={validateFirstname}/>
       </div>
       <div>
-        <TextInput label="City" comp={form} name="data.address.city" validate={validateCity}/>
-      </div>
-      <div>
-       <Password comp={form} />
+        <TextInput label="City" comp={form} name="address.city" validate={validateCity}/>
       </div>
       {/* <div>
+       <Password comp={form} />
+      </div>
+      <div>
         <Friends comp={form}/>
       </div> */}
       {/* <div>

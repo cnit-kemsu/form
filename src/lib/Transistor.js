@@ -7,18 +7,12 @@ export class Transistor extends Composer {
 
   constructor(composer, name) {
     super(null, composer, name);
-
-    this.errors = this.currentErrors;
   }
 
-  handleValuesChange(...callers) {
-    this.errors = this.currentErrors;
-    super.handleValuesChange(...callers);
-  }
-
-  handleReset(prevValues) {
-    this.errors = this.currentErrors;
-    super.handleReset(prevValues);
+  handleValidation() {
+    this.errors = this.validate(this.values);
+    console.log(this.props.name);
+    console.log(this.errors);
   }
 
   findInCache([,, transistor]) {

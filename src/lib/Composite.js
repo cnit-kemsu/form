@@ -7,11 +7,9 @@ export class Composite extends Composer {
   touched = false;
 
   constructor(forceUpdate, composer, name, validate) {
-    super(forceUpdate, ...transit(composer, name));
+    super(forceUpdate, ...transit(composer, name), validate);
 
     this.handleBlur = this.handleBlur.bind(this);
-    this.validate = validate;
-    this.error = this._validate();
   }
 
   handleBlur({ currentTarget, relatedTarget }) {
@@ -20,57 +18,46 @@ export class Composite extends Composer {
       && !currentTarget.contains(relatedTarget)
     ) {
       this.touched = true;
-      this.forceUpdate();
+      this.props.forceUpdate();
     }
   }
 
-  _validate() {
-    const errors = [
-      this.validate?.(this.values),
-      ...this.currentErrors
-    ].filter(notNull);
-
+  handleValidation() {
+    const errors = this.validate(this.values);
     this.errors = errors.map(firstElement).filter(notNull);
-    const error = errors[0]?.[1];
-    if (error != null) this.composer.form.hasErrors = true;
-
-    return error;
+    return errors[0]?.[1];
   }
 
-  shoudUpdateError() {
-    const error = this._validate();
-    if (this.error !== error) {
-      this.error = error;
-      return true;
-    }
-    return false;
+  shouldUpdateOnValuesChange(error, caller, ...callers) {
+    return this.error !== error || (caller === this && (!this.dirty || callers.length === 0));
   }
 
-  shouldUpdateOnValuesChange(caller, ...callers) {
-    return this.shoudUpdateError() || (caller === this && (!this.dirty || callers.length === 0));
-  }
-
-  shouldUpdateOnReset() {
-    return this.shoudUpdateError() || this.dirty || this.touched;
+  shouldUpdateOnReset(error) {
+    return this.error !== error || this.dirty || this.touched;
   }
 
   shouldUpdateOnSubmit() {
-    if (this.error && (!this.dirty || !this.touched)) {
-      this.dirty = true;
-      this.touched = true;
-      return true;
-    }
-    return false;
+    return this.error && (!this.dirty || !this.touched);
   }
 
-  handleValuesChange(caller, ...callers) {
+  handleValuesChange(error, caller, ...callers) {
+    this.error = error;
     if (caller === this) this.dirty = true;
-    super.handleValuesChange(caller, ...callers);
+    super.handleValuesChange(error, caller, ...callers);
   }
 
-  handleReset(prevValues) {
+  handleReset(error, prevValues) {
+    this.error = error;
     this.dirty = false;
     this.touched = false;
-    super.handleReset(prevValues);
+    super.handleReset(error, prevValues);
+  }
+
+  handleSubmit() {
+    if (this.error) {
+      this.dirty = true;
+      this.touched = true;
+    }
+    super.handleSubmit();
   }
 }

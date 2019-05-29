@@ -2,48 +2,38 @@ import { Publisher } from '@kemsu/publisher';
 import { Subscriber } from './Subscriber';
 
 export class Composer extends Subscriber {
+  errors = null;
+  
   valuesChangeEvent = new Publisher();
   resetEvent = new Publisher();
   submitEvent = new Publisher();
 
-  constructor(forceUpdate, composer, name) {
-    super(forceUpdate, composer);
-    this.name = name;
-  }
-
   get form() {
-    return this.composer.form;
+    return this.props.composer.form;
   }
 
   get values() {
-    return this.composer.values?.[this.name];
+    return this.props.composer.values?.[this.props.name];
   }
 
   set values(values) {
-    if (this.composer.values == null) this.composer.values = {};
-    this.composer.values[this.name] = values;
-  }
-
-  get currentErrors() {
-    return this.composer.errors.map(this.currentError);
+    if (this.props.composer.values == null) this.props.composer.values = {};
+    this.props.composer.values[this.props.name] = values;
   }
 
   dispatchValuesChangeEvent(...callers) {
-    this.composer.dispatchValuesChangeEvent(this, ...callers);
+    this.props.composer.dispatchValuesChangeEvent(this, ...callers);
   }
 
-  handleValuesChange(caller, ...callers) {
+  handleValuesChange(error, caller, ...callers) {
     this.valuesChangeEvent.publish(...callers);
-    super.handleValuesChange(caller, ...callers);
   }
 
-  handleReset(prevValues) {
-    this.handleReset.publish(prevValues?.[this.name]);
-    super.handleReset(prevValues);
+  handleReset(error, prevValues) {
+    this.resetEvent.publish(prevValues);
   }
 
   handleSubmit() {
-    this.handleSubmit.publish();
-    super.handleSubmit();
+    this.submitEvent.publish();
   }
 }

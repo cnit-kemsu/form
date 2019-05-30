@@ -7,15 +7,15 @@ export class Transistor extends Composer {
 
   constructor(composer, name) {
     super(null, composer, name);
+
+    this.findInCache = this.findInCache.bind(this);
   }
 
   handleValidation() {
     this.errors = this.validate(this.values);
-    console.log(this.props.name);
-    console.log(this.errors);
   }
 
-  findInCache([,, transistor]) {
+  findInCache([,,transistor]) {
     transistor === this;
   }
 

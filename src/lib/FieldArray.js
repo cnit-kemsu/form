@@ -1,5 +1,5 @@
 import { Composite } from './Composite';
-import { FieldElement } from './FieldElement';
+import { ArrayElement } from './ArrayElement';
 
 export class FieldArray extends Composite {
   elements = [];
@@ -8,13 +8,13 @@ export class FieldArray extends Composite {
     super(forceUpdate, composer, name, validate);
 
     this.props.validateElement = validateElement;
+    this.map = this.map.bind(this);
     this.push = this.push.bind(this);
-    this.deleteElement = this.deleteElement.bind(this);
 
     if (this.values?.length) this.elements.push(
       ...this.values.map(
         (value, index) => {
-          const element = new FieldElement(this, String(index), this.props.validateElement, index);
+          const element = new ArrayElement(this, String(index), this.props.validateElement, index);
           element.subscribeToEvents();
           return element;
         }
@@ -26,19 +26,13 @@ export class FieldArray extends Composite {
     return this.elements.length ? this.elements[this.elements.length - 1].key + 1 : 0;
   }
 
+  map(callback) {
+    return this.elements.map(el => callback(el.key, el));
+  }
+
   push(value) {
     if (this.values == null) this.values = [];
     this.values.push(value);
-    this.props.composer.dispatchValuesChangeEvent(this);
-  }
-
-  deleteElement(element) {
-    element.unsubscribeFromEvents();
-    this.elements.splice(element.name, 1);
-    this.values.splice(element.name, 1);
-    for (let index = element.name; index < this.elements.length; index++) {
-      this.elements[index].name = index;
-    }
     this.props.composer.dispatchValuesChangeEvent(this);
   }
 
@@ -55,7 +49,7 @@ export class FieldArray extends Composite {
   handleValuesChange(...args) {
     let element;
     if (this.values.length !== this.elements.length) {
-      element = new FieldElement(this, String(this.elements.length), this.props.validateElement, this.nextKey);
+      element = new ArrayElement(this, String(this.elements.length), this.props.validateElement, this.nextKey);
       this.elements.push(element);
     }
     super.handleValuesChange(...args);
@@ -70,7 +64,7 @@ export class FieldArray extends Composite {
       this.elements.splice(initialLength, difference);
     } else {
       for (let index = -difference; index > 0; index--) {
-        const element = new FieldElement(this, String(this.elements.length), this.props.validateElement, this.nextKey);
+        const element = new ArrayElement(this, String(this.elements.length), this.props.validateElement, this.nextKey);
         element.subscribeToEvents();
         this.elements.push(element);
       }

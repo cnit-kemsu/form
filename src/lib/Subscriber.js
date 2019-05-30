@@ -1,7 +1,6 @@
 import { notNull } from './_shared';
 
 export class Subscriber {
-  error = undefined;
 
   constructor(forceUpdate, composer, name, validate) {
     this.props = {
@@ -11,7 +10,7 @@ export class Subscriber {
       validate
     };
 
-    this.currentError = this.currentError.bind(this);
+    this.currentErrors = this.currentErrors.bind(this);
     this.handleValuesChangeEvent = this.handleValuesChangeEvent.bind(this);
     this.handleResetEvent = this.handleResetEvent.bind(this);
     this.handleSubmitEvent = this.handleSubmitEvent.bind(this);
@@ -21,12 +20,12 @@ export class Subscriber {
     this.error = this.handleValidation?.();
   }
 
-  currentError(errors) {
+  currentErrors(errors) {
     return errors[this.props.name];
   }
 
   validate(target) {
-    return this.props.composer.errors.map(this.currentError)
+    return this.props.composer.errors.map(this.currentErrors)
     |> this.props.validate == null && # || [this.props.validate(target), ...#]
     |> #.filter(notNull);
   }
@@ -35,28 +34,25 @@ export class Subscriber {
     const error = this.handleValidation?.();
     if (error != null) this.props.composer.form.hasErrors = true;
 
-    if (this.shouldUpdateOnValuesChange?.(error, ...callers)) {
-      this.handleValuesChange?.(error, ...callers);
-      this.props.forceUpdate?.();
-    }
+    const shouldUpdate = this.shouldUpdateOnValuesChange?.(error, ...callers);
+    this.handleValuesChange?.(error, ...callers);
+    if (shouldUpdate) this.props.forceUpdate?.();
   }
 
   handleResetEvent(prevValues) {
     const error = this.handleValidation?.();
     if (error != null) this.props.composer.form.hasErrors = true;
 
-    const currentValues = prevValues?.[this.props.name];
-    if (this.shouldUpdateOnReset?.(error, currentValues)) {
-      this.handleReset?.(error, currentValues);
-      this.props.forceUpdate?.();
-    }
+    const current = prevValues?.[this.props.name];
+    const shouldUpdate = this.shouldUpdateOnReset?.(error, current);
+    this.handleReset?.(error, current);
+    if (shouldUpdate) this.props.forceUpdate?.();
   }
 
   handleSubmitEvent() {
-    if (this.shouldUpdateOnSubmit?.()) {
-      this.handleSubmit?.();
-      this.props.forceUpdate?.();
-    }
+    const shouldUpdate = this.shouldUpdateOnSubmit?.();
+    this.handleSubmit?.();
+    if (shouldUpdate) this.props.forceUpdate?.();
   }
 
   subscribeToEvents() {

@@ -1,6 +1,6 @@
 import { Composite } from './Composite';
 
-export class FieldElement extends Composite {
+export class ArrayElement extends Composite {
   constructor(composer, name, validate, key) {
     super(null, composer, name, validate);
 
@@ -14,7 +14,14 @@ export class FieldElement extends Composite {
   }
 
   delete() {
-    this.props.composer.deleteElement(this);
+    const { composer, name } = this.props;
+    this.unsubscribeFromEvents();
+    composer.elements.splice(name, 1);
+    composer.values.splice(name, 1);
+    for (let index = name; index < composer.elements.length; index++) {
+      composer.elements[index].props.name = index;
+    }
+    composer.props.composer.dispatchValuesChangeEvent(composer);
   }
 
   handleChange(values) {
@@ -23,8 +30,8 @@ export class FieldElement extends Composite {
   }
 
   handleForceUpdateAssignment() {
-    this.props.forceUpdate = this.forceUpdate;
-    delete this.forceUpdate;
+    this.props.forceUpdate = this._forceUpdate;
+    delete this._forceUpdate;
     return () => { this.props.forceUpdate = null; };
   }
 }

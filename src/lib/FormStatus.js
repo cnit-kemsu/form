@@ -5,8 +5,10 @@ export class FormStatus {
   submitErrors = undefined;
 
   constructor(forceUpdate, composer) {
-    this.forceUpdate = forceUpdate;
-    this.composer = composer;
+    this.props = {
+      forceUpdate,
+      composer
+    };
 
     this.handleValidate = this.handleValidate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -47,7 +49,7 @@ export class FormStatus {
   }
 
   handleComplete() {
-    if (this.form.submitErrors !== undefined) {
+    if (this.form.submitErrors != null) {
       this.submitErrors = this.form.submitErrors;
       this.forceUpdate();
     }

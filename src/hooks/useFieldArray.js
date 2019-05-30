@@ -1,20 +1,21 @@
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useContext } from 'react';
 import { useForceUpdate } from '@kemsu/force-update';
 import { FieldArray } from '@lib/FieldArray';
+import { FieldContext } from '@components/Fields';
 
-export function useFieldArray(composer, name, validate) {
+export function useFieldArray(composer, name, validate, validateElement) {
 
+  const _composer = composer || useContext(FieldContext);
   const forceUpdate = useForceUpdate();
-  const fieldArray = useMemo(() => new FieldArray(forceUpdate, composer, name, validate), []);
+  const fieldArray = useMemo(() => new FieldArray(forceUpdate, _composer, name, validate, validateElement), []);
 
   useEffect(fieldArray.handleSubscriptions, []);
 
   return [
+    fieldArray.elements,
     {
-      elements: fieldArray.elements,
-      push: fieldArray.push
-    },
-    {
+      map: fieldArray.map,
+      push: fieldArray.push,
       error: fieldArray.error,
       dirty: fieldArray.dirty,
       touched: fieldArray.touched,

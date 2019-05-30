@@ -53,9 +53,8 @@ export class Field extends Subscriber {
     return this.error && (!this.dirty || !this.touched);
   }
 
-  handleValuesChange(error, caller) {
+  handleValuesChange(error) {
     this.error = error;
-    if (caller === this) this.dirty = true;
   }
 
   handleReset(error) {

@@ -2,10 +2,8 @@ import { Publisher } from '@kemsu/publisher';
 import { copy } from './copy';
 
 export class Form {
-  hasErrors = false;
   submitErrors = undefined;
-  values = null;
-  errors = [];
+  initialValues = {};
 
   valuesChangeEvent = new Publisher();
   validateEvent = new Publisher();
@@ -30,7 +28,9 @@ export class Form {
   }
 
   initialize(values) {
-    this.values = values == null ? {} : copy(values);
+    if (values != null) this.initialValues = values;
+    this.values = copy(this.initialValues);
+    this.hasErrors = false;
     this.validate();
   }
 
@@ -44,7 +44,6 @@ export class Form {
     this.validate();
     this.valuesChangeEvent.publish(...callers);
     this.validateEvent.publish(false);
-    console.log(this.values);
   }
 
   async submit() {

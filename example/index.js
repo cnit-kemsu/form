@@ -5,6 +5,7 @@ import { useField } from '@hooks/useField';
 import { useComposite } from '@hooks/useComposite';
 import { useFieldArray } from '@hooks/useFieldArray';
 // import { useFormStatus } from '@hooks/useFormStatus';
+import Fields from '@components/Fields';
 
 function validateForm({ firstname, data }) {
   if (firstname && data?.address?.city)
@@ -30,9 +31,9 @@ function validateCity(value) {
   return undefined;
 }
 
-function validatePassword({ original, confirm } = {}) {
-  if (original && confirm) {
-    if (original !== confirm) return [
+function validatePasswords({ password, confirmPassword } = {}) {
+  if (password && confirmPassword) {
+    if (password !== confirmPassword) return [
       undefined,
       'Passwords must be identical'
     ];
@@ -40,8 +41,8 @@ function validatePassword({ original, confirm } = {}) {
   return undefined;
 }
 
-function validateOriginalPassword(originalPassword) {
-  if (originalPassword && originalPassword.length < 5) return 'Password must contain more than 5 characters';
+function validatePassword(password) {
+  if (password && password.length < 5) return 'Password must contain more than 5 characters';
   return undefined;
 }
 
@@ -50,10 +51,10 @@ function validateFirends(friends) {
   return undefined; 
 }
 
-function TextInput({ comp, name, validate, label }) {
+function TextInput({ of: composer, name, validate, label }) {
 
   console.log('render TextInput:', name);
-  const { value, error, touched, dirty, onChange, onBlur } = useField(comp, name, validate);
+  const { value, error, touched, dirty, onChange, onBlur } = useField(composer, name, validate);
   
   return (
     <div style={{ padding: '5px', margin: '5px', width: 'fit-content', border: '1px solid black' }}>
@@ -72,9 +73,10 @@ function TextInput({ comp, name, validate, label }) {
 }
 TextInput = React.memo(TextInput);
 
-function Password({ comp }) {
+function Passwords({ of: form }) {
 
-  const [composer, { error, touched, dirty, onBlur }] = useComposite(comp, 'data.password', validatePassword);
+  console.log('render Passwords');
+  const [passwords, { error, touched, dirty, onBlur }] = useComposite(form, 'data.passwords', validatePasswords);
 
   return (
     <div onBlur={onBlur} style={{ padding: '5px', margin: '5px', width: 'fit-content', border: '2px solid black' }}>
@@ -82,8 +84,8 @@ function Password({ comp }) {
         touched: {touched ? 'true' : 'false'}, dirty: {dirty ? 'true' : 'false'}
       </div>
       <div>
-        <TextInput label="Password" comp={composer} name="original" validate={validateOriginalPassword}/>
-        <TextInput label="Confirm password" comp={composer} name="confirm" />
+        <TextInput label="Password" of={passwords} name="password" validate={validatePassword}/>
+        <TextInput label="Confirm password" of={passwords} name="confirmPassword" />
       </div>
       <div>
         {error && <div style={touched && dirty ? { color: 'red' } : {}}>{error}</div>}
@@ -91,29 +93,28 @@ function Password({ comp }) {
     </div>
   );
 }
-Password = React.memo(Password);
+Passwords = React.memo(Passwords);
 
-function Friend({ element }) {
+function Friend({ of: friend }) {
 
-  console.log('render Friend:', element.name);
+  console.log('render Friend:', friend.props.name);
   
   return (
     <div style={{ padding: '5px', margin: '5px', border: '2px solid black', width: 'fit-content' }}>
       <div style={{ display: 'flex' }}>
-        <TextInput label="Firstname" comp={element} name="firstname" />
-        <TextInput label="Lastname" comp={element} name="lastname" />
-        <TextInput label="Middlename" comp={element} name="middlename" />
+        <TextInput label="Firstname" of={friend} name="firstname" />
+        <TextInput label="Lastname" of={friend} name="lastname" />
       </div>
-      <button data-control onClick={element.delete}>Delete</button>
+      <button data-control onClick={friend.delete}>Delete</button>
     </div>
   );
 }
 Friend = React.memo(Friend);
 
-function Friends({ comp }) {
+function Friends({ of: composer }) {
 
   console.log('render Friends');
-  const [{ elements, push }, { error, dirty, touched, onBlur }] = useFieldArray(comp, 'friends', validateFirends);
+  const [firends, { map, push, error, dirty, touched, onBlur }] = useFieldArray(composer, 'friends', validateFirends);
 
   return (
     <div onBlur={onBlur} style={{ padding: '10px', border: '3px solid black', width: 'fit-content' }}>
@@ -121,8 +122,8 @@ function Friends({ comp }) {
         touched: {touched ? 'true' : 'false'}, dirty: {dirty ? 'true' : 'false'}
       </div>
       <div>
-        {elements.map(element => (
-            <Friend key={element.key} element={element} />
+        {map((key, friend) => (
+            <Friend key={key} of={friend} />
         ))}
       </div>
       {error && <div style={touched && dirty ? { color: 'red' } : {}}>{error}</div>}
@@ -165,6 +166,22 @@ Friends = React.memo(Friends);
 // }
 // SubmitErrors = React.memo(SubmitErrors);
 
+ function ResetButton({ comp }) {
+  
+  return (
+    <button data-control onClick={comp.reset}>Reset</button>
+  );
+}
+ResetButton = React.memo(ResetButton);
+
+function SubmitButton({ comp }) {
+  
+  return (
+    <button data-control onClick={comp.submit}>Submit</button>
+  );
+}
+SubmitButton = React.memo(SubmitButton);
+
 async function handleSubmit(values) {
   await new Promise(resolve => setTimeout(resolve, 2000));
   console.log(values);
@@ -187,27 +204,27 @@ function App() {
   const form = useForm(handleSubmit, initValues, validateForm);
 
   return (
-    <div>
+    <div><Fields of={form}>
       <div>
-        <TextInput label="Firstname" comp={form} name="firstname" validate={validateFirstname}/>
+        <TextInput label="Firstname" name="firstname" validate={validateFirstname}/>
       </div>
       <div>
-        <TextInput label="City" comp={form} name="address.city" validate={validateCity}/>
-      </div>
-      {/* <div>
-       <Password comp={form} />
+        <TextInput label="City" name="data.address.city" validate={validateCity}/>
       </div>
       <div>
-        <Friends comp={form}/>
-      </div> */}
+       <Passwords/>
+      </div>
+      <div>
+        <Friends/>
+      </div>
       {/* <div>
         <SubmitErrors comp={form} />
-      </div>
+      </div> */}
       <div style={{ display: 'flex', padding: '10px' }}>
         <ResetButton style={{ margin: '5px' }} comp={form} />
         <SubmitButton style={{ margin: '5px' }} comp={form} />
-      </div> */}
-    </div>
+      </div>
+      </Fields></div>
   );
 }
 

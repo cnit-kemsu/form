@@ -2,8 +2,6 @@ import { Publisher } from '@kemsu/publisher';
 import { Subscriber } from './Subscriber';
 
 export class Composer extends Subscriber {
-  errors = null;
-  
   valuesChangeEvent = new Publisher();
   resetEvent = new Publisher();
   submitEvent = new Publisher();

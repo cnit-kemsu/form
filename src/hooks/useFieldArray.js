@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useContext } from 'react';
 import { useForceUpdate } from '@kemsu/force-update';
-import { FieldArray } from '@lib/FieldArray';
-import { ComposerContext } from '@components/Fields';
+import { FieldArray } from '../lib/FieldArray';
+import { ComposerContext } from '../components/Fields';
 
 export function useFieldArray(composer, name, validate, validateElement) {
 

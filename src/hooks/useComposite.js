@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useContext } from 'react';
 import { useForceUpdate } from '@kemsu/force-update';
-import { Composite } from '@lib/Composite';
-import { ComposerContext } from '@components/Fields';
+import { Composite } from '../lib/Composite';
+import { ComposerContext } from '../components/Fields';
 
 export function useComposite(composer, name, validate) {
 

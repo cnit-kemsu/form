@@ -14,15 +14,7 @@ module.exports = function (api) {
       ['@babel/plugin-proposal-pipeline-operator', { proposal: 'smart' }],
       ['@babel/plugin-proposal-class-properties', { loose: true }],
       ['@babel/plugin-proposal-private-methods', { loose: true }],
-      ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: false }],
-      ['module-resolver', {
-        root: ['./'],
-        alias: {
-          '@components': './src/components',
-          '@hooks': './src/hooks',
-          '@lib': './src/lib'
-        }
-      }]
+      ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: false }]
     ]
   };
 };

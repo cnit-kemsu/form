@@ -13,13 +13,17 @@ export class ArrayElement extends Composite {
     return this.props.key;
   }
 
+  get index() {
+    return this.props.name;
+  }
+
   delete() {
     const { composer, name } = this.props;
     this.unsubscribeFromEvents();
     composer.elements.splice(name, 1);
     composer.values.splice(name, 1);
     for (let index = name; index < composer.elements.length; index++) {
-      composer.elements[index].props.name = index;
+      composer.elements[index].index = index;
     }
     composer.props.composer.dispatchValuesChangeEvent(composer);
   }
@@ -27,11 +31,5 @@ export class ArrayElement extends Composite {
   handleChange(values) {
     this.values = values;
     this.props.composer.dispatchValuesChangeEvent(this);
-  }
-
-  handleForceUpdateAssignment() {
-    this.props.forceUpdate = this._forceUpdate;
-    delete this._forceUpdate;
-    return () => { this.props.forceUpdate = null; };
   }
 }

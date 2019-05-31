@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useContext } from 'react';
 import { useForceUpdate } from '@kemsu/force-update';
 import { Field } from '@lib/Field';
-import { FieldContext } from '@components/Fields';
+import { ComposerContext } from '@components/Fields';
 
 function defaultValueGetter(event) {
   return event.currentTarget.value;
@@ -9,7 +9,7 @@ function defaultValueGetter(event) {
 
 export function useField(composer, name, validate, getValue = defaultValueGetter) {
 
-  const _composer = composer || useContext(FieldContext);
+  const _composer = composer || useContext(ComposerContext);
   const forceUpdate = useForceUpdate();
   const field = useMemo(() => new Field(forceUpdate, _composer, name, validate, getValue), []);
 

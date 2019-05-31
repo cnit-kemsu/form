@@ -1,10 +1,7 @@
-import { useEffect } from 'react';
 import { useForceUpdate } from '@kemsu/force-update';
 
 export function useArrayElement(arrayElement) {
-  arrayElement._forceUpdate = useForceUpdate();
-  
-  useEffect(arrayElement.handleForceUpdateAssignment, []);
+  arrayElement.props.forceUpdate = useForceUpdate();
 
   return {
     name: arrayElement.name,

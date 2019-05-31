@@ -18,6 +18,7 @@ export class Subscriber {
     this.handleSubscriptions = this.handleSubscriptions.bind(this);
 
     this.error = this.handleValidation?.();
+    if (this.error != null) this.props.composer.form.hasErrors = true;
   }
 
   currentErrors(errors) {

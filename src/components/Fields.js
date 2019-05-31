@@ -1,12 +1,12 @@
 import React from 'react';
 
-export const FieldContext = React.createContext();
+export const ComposerContext = React.createContext();
 
-function Fields({ of: composer, children }) {
+function Fields({ comp, children }) {
 
-  return <FieldContext.Provider value={composer}>
+  return <ComposerContext.Provider value={comp}>
     {children}
-  </FieldContext.Provider>;
+  </ComposerContext.Provider>;
 }
 
 export default React.memo(Fields);

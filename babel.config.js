@@ -18,7 +18,7 @@ module.exports = function (api) {
       ['@babel/plugin-proposal-private-methods', { loose: true }],
       ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: false }],
       ["module-resolver", {
-        "root": [path.resolve('./')],
+        "root": ['./'],
         "alias": {
           "@components": "./src/components",
           "@hooks": "./src/hooks",

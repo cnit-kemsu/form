@@ -21,6 +21,7 @@ export class Form {
 
     this.reset = this.reset.bind(this);
     this.submit = this.submit.bind(this);
+    this.submitOnEnterClick = this.submitOnEnterClick.bind(this);
   }
 
   get form() {
@@ -61,5 +62,9 @@ export class Form {
     this.initialize();
     this.resetEvent.publish(prevValues);
     this.validateEvent.publish(true);
+  }
+
+  submitOnEnterClick(event) {
+    if (event.key === 'Enter') this.submit();
   }
 }

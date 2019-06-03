@@ -4,5 +4,5 @@ export { useComposite } from './src/hooks/useComposite';
 export { useFieldArray } from './src/hooks/useFieldArray';
 export { useArrayElement } from './src/hooks/useArrayElement';
 export { useFormSubscriber } from './src/hooks/useFormSubscriber';
-export { useEnterClickSibmit } from './src/hooks/useEnterClickSibmit';
+export { useEnterClickSubmit } from './src/hooks/useEnterClickSubmit';
 export { default as Fields } from './src/components/Fields';

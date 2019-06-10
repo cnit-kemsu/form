@@ -30,7 +30,8 @@ export class Form {
 
   initialize(values) {
     if (values != null) this.initialValues = values;
-    this.values = copy(this.initialValues);
+    this.values = copy(this.initialValues, Form.deserialize);
+    this.diffValues = {};
     this.hasErrors = false;
     this.validate();
   }
@@ -45,15 +46,21 @@ export class Form {
     this.validate();
     this.valuesChangeEvent.publish(...callers);
     this.validateEvent.publish(false);
+
+    console.log(this.values);
+    console.log(this.diffValues);
   }
 
   async submit() {
     this.submitEvent.publish();
     if (!this.hasErrors) {
-      this.submitErrors = await this.props.handleSubmit?.(this.values);
+      this.submitErrors = await this.props.handleSubmit?.(
+        copy(this.values, Form.serialize),
+        copy(this.diffValues, Form.serialize)
+      );
       this.completeEvent.publish();
-      if (this.submitErrors == null) this.props.onSubmitted?.(this.values);
-      else this.props.onSubmitErrors?.(this.submitErrors);
+      if (this.submitErrors == null) this.props.onSubmitted?.(this.values, this.diffValues);
+      else this.props.onSubmitErrors?.(this.submitErrors, this.values, this.diffValues);
     }
   }
 
@@ -66,5 +73,13 @@ export class Form {
 
   submitOnEnterClick(event) {
     if (event.key === 'Enter') this.submit();
+  }
+
+  static serialize(value) {
+    return value;
+  }
+
+  static deserialize(value) {
+    return value;
   }
 }

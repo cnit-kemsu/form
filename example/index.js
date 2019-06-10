@@ -47,7 +47,7 @@ function validatePassword(password) {
   return undefined;
 }
 
-function validateFirends(friends) {
+function validateFriends(friends) {
   if (friends?.length < 2) return [undefined, 'There must be at least 2 friends'];
   return undefined; 
 }
@@ -117,7 +117,7 @@ FriendItem = React.memo(FriendItem);
 function Friends({ comp }) {
 
   console.log('render Friends');
-  const [, { map, push, error, dirty, touched, onBlur }] = useFieldArray(comp, 'friends', validateFirends);
+  const [, { map, push, error, dirty, touched, onBlur }] = useFieldArray(comp, 'friends', validateFriends);
 
   return (
     <div onBlur={onBlur} style={{ padding: '10px', border: '3px solid black', width: 'fit-content' }}>
@@ -178,7 +178,12 @@ const initValues = {
       firstname: 'John',
       lastname: 'Cooper'
     }
-  ]
+  ],
+  data: {
+    passwords: {
+      password: '123'
+    }
+  }
 };
 
 function App() {

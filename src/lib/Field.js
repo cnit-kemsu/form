@@ -5,7 +5,7 @@ export class Field extends Subscriber {
   dirty = false;
   touched = false;
 
-  constructor(forceUpdate, composer, name, validate, getValue) {
+  constructor(forceUpdate, composer, name, validate, getValue,) {
     super(forceUpdate, ...transit(composer, name), validate);
 
     this.props.getValue = getValue;
@@ -18,14 +18,17 @@ export class Field extends Subscriber {
   }
 
   set value(value) {
-    if (!this.props.composer.values) this.props.composer.values = {};
+    if (this.props.composer.values == null) this.props.composer.values = {};
     this.props.composer.values[this.props.name] = value;
   }
 
   handleChange(event) {
-    this.value = this.props.getValue(event);
+    const { composer, name, getValue } = this.props;
+
+    this.value = getValue(event);
+    if (composer.diffValues != null) composer.diffValues[name] = this.value;
     this.dirty = true;
-    this.props.composer.dispatchValuesChangeEvent(this);
+    composer.dispatchValuesChangeEvent(this);
   }
 
   handleBlur({ relatedTarget }) {

@@ -20,7 +20,10 @@ export class Composer extends Subscriber {
   }
 
   dispatchValuesChangeEvent(...callers) {
-    this.props.composer.dispatchValuesChangeEvent(this, ...callers);
+    const { composer, name } = this.props;
+    
+    if (composer.diffValues != null && composer.diffValues[name] == null) composer.diffValues[name] = this.values;
+    composer.dispatchValuesChangeEvent(this, ...callers);
   }
 
   handleValuesChange(error, caller, ...callers) {

@@ -19,17 +19,20 @@ export class ArrayElement extends Composite {
 
   delete() {
     const { composer, name } = this.props;
+    
     this.unsubscribeFromEvents();
     composer.elements.splice(name, 1);
     composer.values.splice(name, 1);
     for (let index = name; index < composer.elements.length; index++) {
       composer.elements[index].index = index;
     }
-    composer.props.composer.dispatchValuesChangeEvent(composer);
+    //composer.props.composer.dispatchValuesChangeEvent(composer);
+    composer.dispatchValuesChangeEvent();
   }
 
   handleChange(values) {
     this.values = values;
-    this.props.composer.dispatchValuesChangeEvent(this);
+    //this.props.composer.dispatchValuesChangeEvent(this);
+    this.dispatchValuesChangeEvent();
   }
 }

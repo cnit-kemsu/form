@@ -33,7 +33,8 @@ export class FieldArray extends Composite {
   push(value) {
     if (this.values == null) this.values = [];
     this.values.push(value);
-    this.props.composer.dispatchValuesChangeEvent(this);
+    //this.props.composer.dispatchValuesChangeEvent(this);
+    this.dispatchValuesChangeEvent();
   }
 
   shouldUpdateOnValuesChange(...args) {

@@ -4,8 +4,13 @@ function copyObject(target) {
   return newObject;
 }
 
-export function copy(target) {
-  if (target instanceof Array) return target.map(copy);
-  if (target instanceof Object) return copyObject(target);
-  return target;
+function simpleCopy(value) {
+  return value;
 }
+
+export function copy(target, customFn = simpleCopy) {
+  if (target instanceof Array) return target.map(copy);
+  if (target.constructor === Object) return copyObject(target);
+  return customFn(target);
+}
+

@@ -10,7 +10,7 @@ function simpleCopy(value) {
 
 export function copy(target, customFn = simpleCopy) {
   if (target instanceof Array) return target.map(copy);
-  if (target.constructor === Object) return copyObject(target);
+  if (target instanceof Object && target.constructor === Object) return copyObject(target);
   return customFn(target);
 }
 

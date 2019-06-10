@@ -6,13 +6,11 @@ export class Field extends Subscriber {
   touched = false;
 
   constructor(forceUpdate, composer, name, validate, getValue, deserialize) {
-    super(forceUpdate, ...transit(composer, name), validate);
+    super(forceUpdate, ...transit(composer, name), validate, deserialize);
 
     this.props.getValue = getValue;
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
-
-    if (deserialize !== undefined) this.value = deserialize(this.value);
   }
 
   get value() {
@@ -42,7 +40,12 @@ export class Field extends Subscriber {
     }
   }
 
+  deserialize() {
+    if (this.props.deserialize) this.value = this.props.deserialize(this.value);
+  }
+
   handleValidation() {
+    this.deserialize();
     return this.validate(this.value)[0];
   }
 
@@ -63,6 +66,7 @@ export class Field extends Subscriber {
   }
 
   handleReset(error) {
+    this.deserialize();
     this.error = error;
     this.dirty = false;
     this.touched = false;

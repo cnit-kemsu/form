@@ -46,9 +46,6 @@ export class Form {
     this.validate();
     this.valuesChangeEvent.publish(...callers);
     this.validateEvent.publish(false);
-
-    console.log(this.values);
-    console.log(this.diffValues);
   }
 
   async submit() {

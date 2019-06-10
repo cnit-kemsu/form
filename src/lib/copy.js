@@ -1,6 +1,6 @@
-function copyObject(target) {
+function copyObject(target, customCopy) {
   const newObject = {};
-  for (const key in target) newObject[key] = copy(target[key]);
+  for (const key in target) newObject[key] = copy(target[key], customCopy);
   return newObject;
 }
 
@@ -8,9 +8,10 @@ function simpleCopy(value) {
   return value;
 }
 
-export function copy(target, customFn = simpleCopy) {
-  if (target instanceof Array) return target.map(copy);
-  if (target instanceof Object && target.constructor === Object) return copyObject(target);
-  return customFn(target);
+export function copy(target, customCopy = simpleCopy) {
+  const copyElement = value => copy(value, customCopy);
+  if (target instanceof Array) return target.map(copyElement);
+  if (target instanceof Object && target.constructor === Object) return copyObject(target, customCopy);
+  return customCopy(target);
 }
 

@@ -30,7 +30,7 @@ export class Form {
 
   initialize(values) {
     if (values != null) this.initialValues = values;
-    this.values = copy(this.initialValues, Form.deserialize);
+    this.values = copy(this.initialValues);
     this.diffValues = {};
     this.hasErrors = false;
     this.validate();
@@ -73,10 +73,10 @@ export class Form {
   }
 
   static serialize(value) {
-    return value;
-  }
-
-  static deserialize(value) {
+    if (value instanceof Date) {
+      return (value.toLocaleDateString('ru').split('.') |> #.reverse().join('-'))
+        + ' ' + value.toLocaleTimeString('ru');
+    }
     return value;
   }
 }

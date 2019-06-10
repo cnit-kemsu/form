@@ -5,12 +5,14 @@ export class Field extends Subscriber {
   dirty = false;
   touched = false;
 
-  constructor(forceUpdate, composer, name, validate, getValue,) {
+  constructor(forceUpdate, composer, name, validate, getValue, deserialize) {
     super(forceUpdate, ...transit(composer, name), validate);
 
     this.props.getValue = getValue;
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
+
+    if (deserialize !== undefined) this.value = deserialize(this.value);
   }
 
   get value() {

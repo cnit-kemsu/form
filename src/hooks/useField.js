@@ -7,11 +7,11 @@ function defaultValueGetter(event) {
   return event.currentTarget.value;
 }
 
-export function useField(composer, name, validate, getValue = defaultValueGetter) {
+export function useField(composer, name, validate, getValue = defaultValueGetter, deserialize) {
 
   const _composer = composer || useContext(ComposerContext);
   const forceUpdate = useForceUpdate();
-  const field = useMemo(() => new Field(forceUpdate, _composer, name, validate, getValue), []);
+  const field = useMemo(() => new Field(forceUpdate, _composer, name, validate, getValue, deserialize), []);
 
   useEffect(field.handleSubscriptions, []);
   

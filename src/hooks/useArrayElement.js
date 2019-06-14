@@ -4,7 +4,7 @@ export function useArrayElement(arrayElement) {
   arrayElement.props.forceUpdate = useForceUpdate();
 
   return {
-    name: arrayElement.name,
+    index: arrayElement.index,
     values: arrayElement.values,
     error: arrayElement.error,
     dirty: arrayElement.dirty,

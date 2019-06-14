@@ -38,7 +38,9 @@ export class FieldArray extends Composite {
   }
 
   shouldUpdateOnValuesChange(...args) {
-    if (this.elements.length !== this.values.length) return true;
+    //TODO:
+    //if (this.elements.length !== this.values.length) return true;
+    if (this.elements.length !== (this.values?.length || 0)) return true;
     return super.shouldUpdateOnValuesChange(...args);
   }
 
@@ -49,7 +51,9 @@ export class FieldArray extends Composite {
 
   handleValuesChange(...args) {
     let element;
-    if (this.values.length !== this.elements.length) {
+    //TODO: 
+    //if (this.values.length !== this.elements.length) {
+    if (this.elements.length !== (this.values?.length || 0)) {
       element = new ArrayElement(this, String(this.elements.length), this.props.validateElement, this.nextKey);
       this.elements.push(element);
     }

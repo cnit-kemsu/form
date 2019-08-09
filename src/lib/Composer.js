@@ -1,10 +1,11 @@
 import { Publisher } from '@kemsu/publisher';
 import { Subscriber } from './Subscriber';
-
+import { copy } from './copy';
 export class Composer extends Subscriber {
   valuesChangeEvent = new Publisher();
   resetEvent = new Publisher();
   submitEvent = new Publisher();
+  serializeEvent = new Publisher();
 
   get form() {
     return this.props.composer.form;
@@ -17,6 +18,18 @@ export class Composer extends Subscriber {
   set values(values) {
     if (this.props.composer.values == null) this.props.composer.values = {};
     this.props.composer.values[this.props.name] = values;
+  }
+
+  get initialValues() {
+    return this.props.composer.initialValues?.[this.props.name];
+  }
+  get serializedValues() {
+    return this.props.composer.serializedValues?.[this.props.name];
+  }
+  set serializedValues(serializedValues) {
+    const { name, composer } = this.props;
+    if (composer.serializedValues == null) composer.serializedValues = copy(composer.values);
+    composer.serializedValues[name] = serializedValues;
   }
 
   dispatchValuesChangeEvent(...callers) {
@@ -36,5 +49,9 @@ export class Composer extends Subscriber {
 
   handleSubmit() {
     this.submitEvent.publish();
+  }
+
+  handleSerialize() {
+    this.serializeEvent.publish();
   }
 }

@@ -4,11 +4,14 @@ import { copy } from './copy';
 export class Form {
   submitErrors = undefined;
   initialValues = {};
+  serializedValues = {};
+  blobs = {};
 
   valuesChangeEvent = new Publisher();
   validateEvent = new Publisher();
   resetEvent = new Publisher();
   submitEvent = new Publisher();
+  serializeEvent = new Publisher();
   completeEvent = new Publisher();
 
   constructor(handleSubmit, validate, onSubmitted, onSubmitErrors) {
@@ -28,10 +31,9 @@ export class Form {
     return this;
   }
 
-  initialize(values) {
-    if (values != null) this.initialValues = values;
+  initialize(initialValues) {
+    if (initialValues != null) this.initialValues = initialValues;
     this.values = copy(this.initialValues);
-    this.diffValues = {};
     this.hasErrors = false;
     this.validate();
   }
@@ -51,13 +53,13 @@ export class Form {
   async submit() {
     this.submitEvent.publish();
     if (!this.hasErrors) {
-      this.submitErrors = await this.props.handleSubmit?.(
-        copy(this.values, Form.serialize),
-        copy(this.diffValues, Form.serialize)
-      );
+      this.serializeEvent.publish();
+      this.submitErrors = await this.props.handleSubmit?.(this.serializedValues, this.blobs);
       this.completeEvent.publish();
-      if (this.submitErrors == null) this.props.onSubmitted?.(this.values, this.diffValues);
-      else this.props.onSubmitErrors?.(this.submitErrors, this.values, this.diffValues);
+      if (this.submitErrors == null) this.props.onSubmitted?.(this.serializedValues, this.blobs);
+      else this.props.onSubmitErrors?.(this.submitErrors, this.serializedValues, this.blobs);
+      this.serializedValues = {};
+      this.blobs = {};
     }
   }
 
@@ -70,13 +72,5 @@ export class Form {
 
   submitOnEnterClick(event) {
     if (event.key === 'Enter') this.submit();
-  }
-
-  static serialize(value) {
-    if (value instanceof Date) {
-      return (value.toLocaleDateString('ru').split('.') |> #.reverse().join('-'))
-        + ' ' + value.toLocaleTimeString('ru');
-    }
-    return value;
   }
 }

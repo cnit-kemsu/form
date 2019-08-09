@@ -3,15 +3,15 @@ import { useForceUpdate } from '@kemsu/force-update';
 import { Field } from '../lib/Field';
 import { ComposerContext } from '../components/Fields';
 
-function defaultValueGetter(event) {
-  return event.currentTarget.value;
+function defaultHandleValue(value) {
+  return value;
 }
 
-export function useField(composer, name, validate, getValue = defaultValueGetter, deserialize) {
+export function useField(composer, name, validate, { handleValue = defaultHandleValue, deserialize, serialize }) {
 
   const _composer = composer || useContext(ComposerContext);
   const forceUpdate = useForceUpdate();
-  const field = useMemo(() => new Field(forceUpdate, _composer, name, validate, getValue, deserialize), []);
+  const field = useMemo(() => new Field(forceUpdate, _composer, name, validate, handleValue, deserialize, serialize), []);
 
   useEffect(field.handleSubscriptions, []);
   

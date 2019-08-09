@@ -34,7 +34,7 @@ function validateCity(value) {
 function validatePasswords(values) {
   if (values) {
     const { password, confirmPassword } = values;
-    if (password !== confirmPassword) return [
+    if (password && confirmPassword) if (password !== confirmPassword) return [
       undefined,
       'Passwords must be identical'
     ];
@@ -48,14 +48,20 @@ function validatePassword(password) {
 }
 
 function validateFriends(friends) {
-  if (friends?.length < 2) return [undefined, 'There must be at least 2 friends'];
+  if (friends?.length < 1) return [undefined, 'There must be at least 2 friends'];
   return undefined; 
 }
+
+const TextInputProps = {
+  handleValue(event) {
+    return event.currentTarget.value;
+  }
+};
 
 function TextInput({ comp, name, validate, label }) {
 
   console.log('render TextInput:', name);
-  const { value, error, touched, dirty, onChange, onBlur } = useField(comp, name, validate);
+  const { value, error, touched, dirty, onChange, onBlur } = useField(comp, name, validate, TextInputProps);
   
   return (
     <div style={{ padding: '5px', margin: '5px', width: 'fit-content', border: '1px solid black' }}>
@@ -167,7 +173,8 @@ SubmitErrors = React.memo(SubmitErrors);
 
 async function handleSubmit(values) {
   await new Promise(resolve => setTimeout(resolve, 2000));
-  console.log(values);
+  console.log('submitValues:', values);
+  JSON.stringify(values, null, 1) |> console.log;
   if (values.firstname === 'John') return 'John is invalid firstname';
 }
 
@@ -177,6 +184,8 @@ const initValues = {
     {
       firstname: 'John',
       lastname: 'Cooper'
+    },
+    {
     }
   ],
   data: {

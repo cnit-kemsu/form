@@ -1,6 +1,7 @@
 import { Publisher } from '@kemsu/publisher';
 import { Subscriber } from './Subscriber';
 import { copy } from './copy';
+
 export class Composer extends Subscriber {
   valuesChangeEvent = new Publisher();
   resetEvent = new Publisher();
@@ -33,10 +34,7 @@ export class Composer extends Subscriber {
   }
 
   dispatchValuesChangeEvent(...callers) {
-    const { composer, name } = this.props;
-    
-    if (composer.diffValues != null && composer.diffValues[name] == null) composer.diffValues[name] = this.values;
-    composer.dispatchValuesChangeEvent(this, ...callers);
+    this.props.composer.dispatchValuesChangeEvent(this, ...callers);
   }
 
   handleValuesChange(error, caller, ...callers) {

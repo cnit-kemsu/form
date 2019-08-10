@@ -14,12 +14,13 @@ export class Form {
   serializeEvent = new Publisher();
   completeEvent = new Publisher();
 
-  constructor(handleSubmit, validate, onSubmitted, onSubmitErrors) {
+  constructor(handleSubmit, validate, deserialize, onSubmitted, onSubmitErrors) {
     this.props = {
       handleSubmit,
       validate,
       onSubmitted,
-      onSubmitErrors
+      onSubmitErrors,
+      deserialize
     };
 
     this.reset = this.reset.bind(this);
@@ -34,6 +35,7 @@ export class Form {
   initialize(initialValues) {
     if (initialValues != null) this.initialValues = initialValues;
     this.values = copy(this.initialValues);
+    this.props.deserialize?.(this.values);
     this.hasErrors = false;
     this.validate();
   }

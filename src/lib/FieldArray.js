@@ -1,5 +1,6 @@
 import { Composite } from './Composite';
 import { ArrayElement } from './ArrayElement';
+import { copy } from './copy';
 
 export class FieldArray extends Composite {
   elements = [];
@@ -75,5 +76,10 @@ export class FieldArray extends Composite {
       }
     }
     super.handleReset(error, prevValues);
+  }
+
+  handleSerialize() {
+    if (this.dirty) this.serializedValues = copy(this.values);
+    super.handleSerialize();
   }
 }

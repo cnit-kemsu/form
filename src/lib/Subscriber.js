@@ -2,13 +2,12 @@ import { notNull } from './_shared';
 
 export class Subscriber {
 
-  constructor(forceUpdate, composer, name, validate, deserialize) {
+  constructor(forceUpdate, composer, name, validate) {
     this.props = {
       forceUpdate,
       composer,
       name,
-      validate,
-      deserialize
+      validate
     };
 
     this.currentErrors = this.currentErrors.bind(this);

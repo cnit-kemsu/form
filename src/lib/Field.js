@@ -6,8 +6,8 @@ export class Field extends Subscriber {
   dirty = false;
   touched = false;
 
-  constructor(forceUpdate, composer, name, validate, handleValue, deserialize, serialize) {
-    super(forceUpdate, ...transit(composer, name), validate, deserialize);
+  constructor(forceUpdate, composer, name, validate, handleValue, serialize) {
+    super(forceUpdate, ...transit(composer, name), validate);
 
     this.props.handleValue = handleValue;
     this.props.serialize = serialize;
@@ -55,12 +55,7 @@ export class Field extends Subscriber {
     }
   }
 
-  deserialize() {
-    if (this.props.deserialize) this.value = this.props.deserialize(this.value);
-  }
-
   handleValidation() {
-    this.deserialize();
     return this.validate(this.value)[0];
   }
 
@@ -94,7 +89,6 @@ export class Field extends Subscriber {
   }
 
   handleReset(error) {
-    this.deserialize();
     this.error = error;
     this.dirty = false;
     this.touched = false;

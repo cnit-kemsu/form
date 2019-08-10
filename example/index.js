@@ -186,6 +186,7 @@ const initValues = {
       lastname: 'Cooper'
     },
     {
+      firstname: 'John1',
     }
   ],
   data: {

@@ -32,6 +32,14 @@ export class Composer extends Subscriber {
     if (composer.serializedValues == null) composer.serializedValues = copy(composer.values);
     composer.serializedValues[name] = serializedValues;
   }
+  get blobs() {
+    return this.props.composer.blobs?.[this.props.name];
+  }
+  set blobs(blobs) {
+    const { name, composer } = this.props;
+    if (composer.blobs == null) composer.blobs = {};
+    composer.blobs[name] = blobs;
+  }
 
   dispatchValuesChangeEvent(...callers) {
     this.props.composer.dispatchValuesChangeEvent(this, ...callers);

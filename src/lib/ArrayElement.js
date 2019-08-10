@@ -35,4 +35,13 @@ export class ArrayElement extends Composite {
     //this.props.composer.dispatchValuesChangeEvent(this);
     this.dispatchValuesChangeEvent();
   }
+
+  get blobs() {
+    return this.props.composer.blobs?.[this.props.name];
+  }
+  set blobs(blobs) {
+    const { name, composer } = this.props;
+    if (composer.blobs == null) composer.blobs = [];
+    composer.blobs[name] = blobs;
+  }
 }

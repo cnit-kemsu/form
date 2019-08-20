@@ -29,7 +29,7 @@ export class Field extends Subscriber {
   }
   setSerializedValue(serializedValue) {
     const { name, composer } = this.props;
-    if (composer.serializedValues == null) composer.serializedValues = copy(composer.values);
+    if (composer.serializedValues == null) composer.serializedValues = copy(composer.values || {});
     composer.serializedValues[name] = serializedValue;
   }
 

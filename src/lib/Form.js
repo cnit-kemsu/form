@@ -5,7 +5,6 @@ export class Form {
   submitErrors = undefined;
   initialValues = {};
   serializedValues = {};
-  blobs = {};
 
   valuesChangeEvent = new Publisher();
   validateEvent = new Publisher();
@@ -56,12 +55,11 @@ export class Form {
     this.submitEvent.publish();
     if (!this.hasErrors) {
       this.serializeEvent.publish();
-      this.submitErrors = await this.props.handleSubmit?.(this.serializedValues, this.blobs);
+      this.submitErrors = await this.props.handleSubmit?.(this.serializedValues);
       this.completeEvent.publish();
-      if (this.submitErrors == null) this.props.onSubmitted?.(this.serializedValues, this.blobs);
-      else this.props.onSubmitErrors?.(this.submitErrors, this.serializedValues, this.blobs);
+      if (this.submitErrors == null) this.props.onSubmitted?.(this.serializedValues);
+      else this.props.onSubmitErrors?.(this.submitErrors, this.serializedValues);
       this.serializedValues = {};
-      this.blobs = {};
     }
   }
 

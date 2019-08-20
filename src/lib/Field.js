@@ -32,11 +32,6 @@ export class Field extends Subscriber {
     if (composer.serializedValues == null) composer.serializedValues = copy(composer.values);
     composer.serializedValues[name] = serializedValue;
   }
-  setBlobs(blobs) {
-    const { name, composer } = this.props;
-    if (composer.blobs == null) composer.blobs = {};
-    composer.blobs[name] = blobs;
-  }
 
   handleChange(event) {
     const { composer, handleValue } = this.props;
@@ -61,9 +56,8 @@ export class Field extends Subscriber {
 
   serialize() {
     if (this.props.serialize) {
-      const [serializedValue, blobs] = this.props.serialize(this.value);
+      const serializedValue = this.props.serialize(this.value);
       this.setSerializedValue(serializedValue);
-      if (blobs) this.setBlobs(blobs);
     }
     else this.setSerializedValue(this.value);
   }

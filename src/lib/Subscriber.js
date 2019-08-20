@@ -57,8 +57,8 @@ export class Subscriber {
     if (shouldUpdate) this.props.forceUpdate?.();
   }
 
-  handleSerializeEvent() {
-    this.handleSerialize?.();
+  handleSerializeEvent(forceSerialize) {
+    this.handleSerialize?.(forceSerialize);
   }
 
   subscribeToEvents() {

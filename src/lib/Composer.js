@@ -49,7 +49,7 @@ export class Composer extends Subscriber {
     this.submitEvent.publish();
   }
 
-  handleSerialize() {
-    this.serializeEvent.publish();
+  handleSerialize(forceSerialize = false) {
+    this.serializeEvent.publish(forceSerialize);
   }
 }

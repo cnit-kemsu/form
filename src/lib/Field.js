@@ -62,8 +62,9 @@ export class Field extends Subscriber {
     else this.setSerializedValue(this.value);
   }
 
-  handleSerialize() {
-    if (this.dirty && this.value !== this.initialValue) this.serialize();
+  handleSerialize(forceSerialize) {
+    const _forceSerialize = forceSerialize || (this.dirty && this.value !== this.initialValue);
+    if (_forceSerialize) this.serialize();
   }
 
   shouldUpdateOnValuesChange(error, caller) {

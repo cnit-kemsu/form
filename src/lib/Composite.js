@@ -1,6 +1,7 @@
 import { Composer } from './Composer';
 import { transit } from './transit';
 import { notNull, firstElement } from './_shared';
+import { copy } from './copy';
 
 export class Composite extends Composer {
   dirty = false;
@@ -59,5 +60,11 @@ export class Composite extends Composer {
       this.touched = true;
     }
     super.handleSubmit();
+  }
+
+  handleSerialize(forceSerialize) {
+    const _forceSerialize = forceSerialize || this.dirty;
+    if (_forceSerialize) this.serializedValues = copy(this.values);
+    super.handleSerialize(_forceSerialize);
   }
 }

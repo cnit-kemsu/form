@@ -54,7 +54,7 @@ export class Form {
   async submit() {
     this.submitEvent.publish();
     if (!this.hasErrors) {
-      this.serializeEvent.publish();
+      this.serializeEvent.publish(false);
       this.submitErrors = await this.props.handleSubmit?.(this.serializedValues);
       this.completeEvent.publish();
       if (this.submitErrors == null) this.props.onSubmitted?.(this.serializedValues);

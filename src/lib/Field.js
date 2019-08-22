@@ -56,17 +56,20 @@ export class Field extends Subscriber {
     return this.validate(this.value)[0];
   }
 
-  serialize() {
+  serialize(value) {
     if (this.props.serialize) {
-      const serializedValue = this.props.serialize(this.value);
+      const serializedValue = this.props.serialize(value);
       this.setSerializedValue(serializedValue);
     }
-    else this.setSerializedValue(this.value);
+    else this.setSerializedValue(value);
   }
 
   handleSerialize(forceSerialize) {
-    const _forceSerialize = forceSerialize || (this.dirty && this.value !== this.initialValue);
-    if (_forceSerialize) this.serialize();
+    const _forceSerialize = forceSerialize || (this.dirty && this.value != this.initialValue);
+    if (_forceSerialize) {
+      const value = this.value ? this.value : (this.initialValue ? null : undefined);
+      if (value !== undefined) this.serialize(value);
+    }
   }
 
   shouldUpdateOnValuesChange(error, caller) {

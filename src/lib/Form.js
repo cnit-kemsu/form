@@ -13,13 +13,14 @@ export class Form {
   serializeEvent = new Publisher();
   completeEvent = new Publisher();
 
-  constructor(handleSubmit, validate, deserialize, onSubmitted, onSubmitErrors) {
+  constructor(handleSubmit, validate, deserialize, onSubmitted, onSubmitErrors, forceSerialize) {
     this.props = {
       handleSubmit,
       validate,
       onSubmitted,
       onSubmitErrors,
-      deserialize
+      deserialize,
+      forceSerialize
     };
 
     this.reset = this.reset.bind(this);
@@ -54,7 +55,7 @@ export class Form {
   async submit() {
     this.submitEvent.publish();
     if (!this.hasErrors) {
-      this.serializeEvent.publish(false);
+      this.serializeEvent.publish(this.props.forceSerialize);
       this.submitErrors = await this.props.handleSubmit?.(this.serializedValues);
       this.completeEvent.publish();
       if (this.submitErrors == null) this.props.onSubmitted?.(this.serializedValues);

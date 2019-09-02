@@ -17,6 +17,10 @@ export class ArrayElement extends Composite {
     return this.props.name;
   }
 
+  set index(value) {
+    this.props.name = value;
+  }
+
   delete() {
     const { composer, name } = this.props;
     

@@ -4,6 +4,7 @@ export const cache = [];
 
 export class Transistor extends Composer {
   totalSubscribers = 0;
+  isTransistor = true;
 
   constructor(composer, name) {
     super(null, composer, name);

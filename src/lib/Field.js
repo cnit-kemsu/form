@@ -6,13 +6,14 @@ export class Field extends Subscriber {
   dirty = false;
   touched = false;
 
-  constructor(forceUpdate, composer, name, validate, handleValue, serialize) {
+  constructor(forceUpdate, composer, name, validate, handleValue, serialize, props) {
     super(forceUpdate, ...transit(composer, name), validate);
 
     this.props.handleValue = handleValue;
     this.props.serialize = serialize;
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
+    this.props.otherProps = props;
   }
 
   get value() {
@@ -38,7 +39,7 @@ export class Field extends Subscriber {
   handleChange(event) {
     const { composer, handleValue } = this.props;
 
-    this.value = handleValue(event);
+    this.value = handleValue(event, this.value, this.props.otherProps);
     this.dirty = true;
     composer.dispatchValuesChangeEvent(this);
   }

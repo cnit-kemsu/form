@@ -7,11 +7,11 @@ function defaultHandleValue(value) {
   return value;
 }
 
-export function useField(composer, name, validate, { handleValue = defaultHandleValue, serialize }) {
+export function useField(composer, name, validate, { handleValue = defaultHandleValue, serialize }, props) {
 
   const _composer = composer || useContext(ComposerContext);
   const forceUpdate = useForceUpdate();
-  const field = useMemo(() => new Field(forceUpdate, _composer, name, validate, handleValue, serialize), []);
+  const field = useMemo(() => new Field(forceUpdate, _composer, name, validate, handleValue, serialize, props), []);
 
   useEffect(field.handleSubscriptions, []);
   

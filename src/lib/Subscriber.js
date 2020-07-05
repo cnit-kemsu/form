@@ -62,7 +62,7 @@ export class Subscriber {
   }
 
   subscribeToEvents() {
-    console.log('subscribeToEvents:', this.props.name);
+    //console.log('subscribeToEvents:', this.props.name);
     if (this.props.composer.isTransistor) this.props.composer.subscribeToEvents();
     this.valuesChangeSub = this.props.composer.valuesChangeEvent.subscribe(this.handleValuesChangeEvent);
     this.resetSub = this.props.composer.resetEvent.subscribe(this.handleResetEvent);
@@ -71,7 +71,7 @@ export class Subscriber {
   }
 
   unsubscribeFromEvents() {
-    console.log('unsubscribeFromEvents:', this.props.name);
+    //console.log('unsubscribeFromEvents:', this.props.name);
     this.valuesChangeSub.unsubscribe();
     this.resetSub.unsubscribe();
     this.submitSub.unsubscribe();

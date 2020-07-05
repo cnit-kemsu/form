@@ -13,13 +13,28 @@ export class Form {
   serializeEvent = new Publisher();
   completeEvent = new Publisher();
 
-  constructor(handleSubmit, validate, deserialize, onSubmitted, onSubmitErrors) {
+  // constructor(handleSubmit, validate, deserialize, onSubmitted, onSubmitErrors) {
+  //   this.props = {
+  //     handleSubmit,
+  //     validate,
+  //     onSubmitted,
+  //     onSubmitErrors,
+  //     deserialize
+  //   };
+
+  //   this.reset = this.reset.bind(this);
+  //   this.submit = this.submit.bind(this);
+  //   this.submitOnEnterClick = this.submitOnEnterClick.bind(this);
+  // }
+
+  constructor(handleSubmit, validate, deserialize, onSubmitted, onSubmitErrors, mapValues) {
     this.props = {
       handleSubmit,
       validate,
       onSubmitted,
       onSubmitErrors,
-      deserialize
+      deserialize,
+      mapValues
     };
 
     this.reset = this.reset.bind(this);
@@ -51,14 +66,29 @@ export class Form {
     this.validateEvent.publish(false);
   }
 
+  // async submit() {
+  //   this.submitEvent.publish();
+  //   if (!this.hasErrors) {
+  //     this.serializeEvent.publish(false);
+  //     this.submitErrors = await this.props.handleSubmit?.(this.serializedValues);
+  //     this.completeEvent.publish();
+  //     if (this.submitErrors == null) this.props.onSubmitted?.(this.serializedValues);
+  //     else this.props.onSubmitErrors?.(this.submitErrors, this.serializedValues);
+  //     this.serializedValues = {};
+  //   }
+  // }
+
   async submit() {
+    const { mapValues } = this.props;
+
     this.submitEvent.publish();
     if (!this.hasErrors) {
       this.serializeEvent.publish(false);
-      this.submitErrors = await this.props.handleSubmit?.(this.serializedValues);
+      const mappedValues = mapValues != null ? mapValues(this.serializedValues) : this.serializedValues;
+      this.submitErrors = await this.props.handleSubmit?.(mappedValues);
       this.completeEvent.publish();
-      if (this.submitErrors == null) this.props.onSubmitted?.(this.serializedValues);
-      else this.props.onSubmitErrors?.(this.submitErrors, this.serializedValues);
+      if (this.submitErrors == null) this.props.onSubmitted?.(this.serializedValues, mappedValues);
+      else this.props.onSubmitErrors?.(this.submitErrors, this.serializedValues, mappedValues);
       this.serializedValues = {};
     }
   }

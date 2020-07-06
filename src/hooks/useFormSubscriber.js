@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useContext } from 'react';
 import { useForceUpdate } from '@kemsu/force-update';
-import { FormSubscriber } from '../lib/FormSubscriber';
+import { FormSubscriber } from '../internals/FormSubscriber';
 import { ComposerContext } from '../components/Fields';
 
 export function useFormSubscriber(composer) {

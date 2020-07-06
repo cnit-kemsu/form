@@ -1,11 +1,11 @@
 import React, { createElement } from 'react';
 import ReactDOM from 'react-dom';
-import { useForm } from '@hooks/useForm';
-import { useField } from '@hooks/useField';
-import { useComposite } from '@hooks/useComposite';
-import { useFieldArray } from '@hooks/useFieldArray';
-import { useFormSubscriber } from '@hooks/useFormSubscriber';
-import Fields from '@components/Fields';
+import { useForm } from '@src/hooks/useForm';
+import { useField } from '@src/hooks/useField';
+import { useComposite } from '@src/hooks/useComposite';
+import { useFieldArray } from '@src/hooks/useFieldArray';
+import { useFormSubscriber } from '@src/hooks/useFormSubscriber';
+import Fields from '@src/components/Fields';
 
 function validateForm({ firstname, data }) {
   if (firstname && data?.address?.city)
@@ -68,7 +68,7 @@ function TextInput({ comp, name, validate, label }) {
       <div>
         {label}
       </div>
-      <div>
+      <div className="params">
         touched: {touched ? 'true' : 'false'}, dirty: {dirty ? 'true' : 'false'}
       </div>
       <div>
@@ -87,7 +87,7 @@ function Passwords({ comp }) {
 
   return (
     <div onBlur={onBlur} style={{ padding: '5px', margin: '5px', width: 'fit-content', border: '2px solid black' }}>
-      <div>
+      <div className="params">
         touched: {touched ? 'true' : 'false'}, dirty: {dirty ? 'true' : 'false'}
       </div>
       <div>
@@ -127,7 +127,7 @@ function Friends({ comp }) {
 
   return (
     <div onBlur={onBlur} style={{ padding: '10px', border: '3px solid black', width: 'fit-content' }}>
-      <div>
+      <div className="params">
         touched: {touched ? 'true' : 'false'}, dirty: {dirty ? 'true' : 'false'}
       </div>
       <div>

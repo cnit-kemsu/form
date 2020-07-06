@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useContext } from 'react';
 import { useForceUpdate } from '@kemsu/force-update';
-import { Field } from '../lib/Field';
+import { Field } from '../internals/Field';
 import { ComposerContext } from '../components/Fields';
 
 function defaultHandleValue(value) {

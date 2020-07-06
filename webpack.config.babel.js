@@ -1,6 +1,5 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { DuplicatesPlugin } from 'inspectpack/plugin';
 
 export default {
   mode: 'development',
@@ -31,8 +30,7 @@ export default {
   plugins: [
     new HtmlWebpackPlugin({
       template: './example/index.html'
-    }),
-    new DuplicatesPlugin({})
+    })
   ],
 
   optimization: {
@@ -51,9 +49,7 @@ export default {
 
   resolve: {
     alias: {
-      '@components': path.resolve(__dirname, 'src/components/'),
-      '@hooks': path.resolve(__dirname, 'src/hooks/'),
-      '@lib': path.resolve(__dirname, 'src/lib/')
+      '@src': path.resolve(__dirname, 'src/')
     }
   },
 

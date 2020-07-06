@@ -1,4 +1,4 @@
-export { Form } from './src/lib/Form';
+export { Form } from './src/internals/Form';
 export { useForm } from './src/hooks/useForm';
 export { useField } from './src/hooks/useField';
 export { useComposite } from './src/hooks/useComposite';
